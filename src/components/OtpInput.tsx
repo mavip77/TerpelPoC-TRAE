@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Animated, Keyboard, Platform, StyleSheet, TextInput, View} from 'react-native';
 
 type OtpInputProps = {
   length?: number;
@@ -10,19 +10,22 @@ type OtpInputProps = {
 const MIN_LEN = 4;
 const MAX_LEN = 8;
 
-export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputProps) {
-  const otpLength = useMemo(() =>
-    Math.max(MIN_LEN, Math.min(MAX_LEN, Math.floor(length || MIN_LEN))),
-  [length]);
+        export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputProps) {
+          const otpLength = useMemo(() =>
+            Math.max(MIN_LEN, Math.min(MAX_LEN, Math.floor(length || MIN_LEN))),
+          [length]);
 
-  const [values, setValues] = useState<string[]>(Array(otpLength).fill(''));
-  const [focusedIndex, setFocusedIndex] = useState<number>(0);
-  const inputs = useRef<Array<TextInput | null>>([]);
-  const scales = useRef<Animated.Value[]>(
-    Array(otpLength)
-      .fill(0)
-      .map(() => new Animated.Value(1)),
-  ).current;
+          const [values, setValues] = useState<string[]>(Array(otpLength).fill(''));
+          const [focusedIndex, setFocusedIndex] = useState<number>(0);
+          const manualRef = useRef<boolean>(false);
+          const inputs = useRef<Array<TextInput | null>>([]);
+          const scales = useRef<Animated.Value[]>(
+            Array(otpLength)
+              .fill(0)
+              .map(() => new Animated.Value(1)),
+          ).current;
+          const rowOpacity = useRef(new Animated.Value(1)).current;
+          const hasAnyRef = useRef<boolean>(false);
 
   useEffect(() => {
     const first = inputs.current[0];
@@ -33,17 +36,35 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
     if (!seedCode) {
       return;
     }
-    const sliced = seedCode.slice(0, otpLength).split('');
-    const merged = Array(otpLength)
-      .fill('')
-      .map((_, i) => sliced[i] ?? '');
-    setValues(merged);
-    if (merged.every(ch => ch)) {
-      inputs.current[otpLength - 1]?.blur();
-      Keyboard.dismiss();
-      onComplete?.(merged.join(''));
+    const cleaned = String(seedCode).replace(/\D/g, '').slice(0, otpLength);
+    if (cleaned.length < 4) {
+      return;
     }
-  }, [seedCode, otpLength, onComplete]);
+    const apply = () => {
+      const merged = Array(otpLength).fill('');
+      for (let i = 0; i < Math.min(otpLength, cleaned.length); i++) {
+        merged[i] = cleaned[i];
+      }
+      setValues(merged);
+      setFocusedIndex(Math.min(otpLength - 1, cleaned.length - 1));
+      const code = merged.join('');
+      if (code.length === otpLength) {
+        inputs.current[otpLength - 1]?.blur();
+        Keyboard.dismiss();
+        onComplete?.(code);
+      }
+      manualRef.current = false;
+    };
+    if (manualRef.current && hasAnyRef.current) {
+      Animated.timing(rowOpacity, {toValue: 0, duration: 150, useNativeDriver: true}).start(() => {
+        setValues(Array(otpLength).fill(''));
+        hasAnyRef.current = false;
+        Animated.timing(rowOpacity, {toValue: 1, duration: 120, useNativeDriver: true}).start(() => apply());
+      });
+    } else {
+      setTimeout(apply, 0);
+    }
+  }, [seedCode, otpLength, rowOpacity, onComplete]);
 
   useEffect(() => {
     if (typeof (Animated as any)?.spring === 'function') {
@@ -69,11 +90,13 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
     }
   }, [focusedIndex, otpLength, scales]);
 
-  const handleChange = (text: string, index: number) => {
-    let t = text;
-    if (!t) {
-      return;
-    }
+          const handleChange = (text: string, index: number) => {
+            let t = text;
+            if (!t) {
+              return;
+            }
+            manualRef.current = true;
+            hasAnyRef.current = true;
 
     if (t.length > 1) {
       const merged = [...values];
@@ -96,9 +119,9 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
       return;
     }
 
-    const next = [...values];
-    next[index] = t;
-    setValues(next);
+            const next = [...values];
+            next[index] = t;
+            setValues(next);
 
     if (index < otpLength - 1) {
       inputs.current[index + 1]?.focus();
@@ -109,7 +132,7 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
       const code = next.join('');
       onComplete?.(code);
     }
-  };
+          };
 
   const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === 'Backspace') {
@@ -129,46 +152,38 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Ingresa el código OTP</Text>
-      <View style={styles.row}>
-        {values.map((val, i) => (
-          <Animated.View key={i} style={[styles.box, i === focusedIndex ? styles.boxActive : null, {transform: [{scale: scales[i]}]}]}>
-            <TextInput
-              ref={r => (inputs.current[i] = r)}
-              value={val}
-              onChangeText={t => handleChange(t.replace(/\s/g, ''), i)}
-              onFocus={() => setFocusedIndex(i)}
-              onKeyPress={e => handleKeyPress(e, i)}
-              selectionColor="#1f6feb"
-              style={styles.input}
-              maxLength={1}
-              keyboardType="number-pad"
-              autoFocus={i === 0}
-              textContentType={Platform.OS === 'ios' ? 'oneTimeCode' : 'none'}
-              autoComplete="one-time-code"
-              enterKeyHint="next"
-              importantForAutofill="yes"
-              autoCorrect={false}
-              contextMenuHidden
-            />
-          </Animated.View>
-        ))}
-      </View>
+              <Animated.View style={[styles.row, {opacity: rowOpacity}] }>
+                {values.map((val, i) => (
+                  <Animated.View key={i} style={[styles.box, (i === focusedIndex || !!values[i]) ? styles.boxActive : null, (i === focusedIndex || !!values[i]) ? styles.boxActiveBg : null, {transform: [{scale: scales[i]}]}]}>
+                    <TextInput
+                      ref={r => (inputs.current[i] = r)}
+                      value={val}
+                      onChangeText={t => handleChange(t.replace(/\s/g, ''), i)}
+                      onFocus={() => setFocusedIndex(i)}
+                      onKeyPress={e => handleKeyPress(e, i)}
+                      selectionColor="#E31E24"
+                      style={styles.input}
+                      maxLength={1}
+                      keyboardType="number-pad"
+                      autoFocus={i === 0}
+                      textContentType={Platform.OS === 'ios' ? 'oneTimeCode' : 'none'}
+                      autoComplete="one-time-code"
+                      enterKeyHint="next"
+                      importantForAutofill="yes"
+                      autoCorrect={false}
+                      contextMenuHidden
+                    />
+                  </Animated.View>
+                ))}
+              </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 24,
+    paddingHorizontal: 0,
   },
   row: {
     flexDirection: 'row',
@@ -191,6 +206,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   boxActive: {borderColor: '#E31E24'},
+  boxActiveBg: {backgroundColor: '#FFFFFF'},
   input: {
     fontSize: 24,
     fontWeight: '700',
