@@ -1,10 +1,13 @@
 import React, {useMemo, useRef, useState} from 'react';
 import {Dimensions, FlatList, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import FastImage from '@d11/react-native-fast-image';
+// @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 type HomeProps = {
   onOpenOtp: () => void;
+  navigation?: any;
+  onNavigateMiBolsillo?: () => void;
 };
 
 const COLORS = {
@@ -29,7 +32,7 @@ const points = [
   {id: 'p-3', title: 'Descuento lubricantes', image: 'https://images.unsplash.com/photo-1581360193516-c318e25f0363?w=800&q=50'},
 ];
 
-export default function HomeScreen({onOpenOtp}: HomeProps) {
+export default function HomeScreen({onOpenOtp, onNavigateMiBolsillo, navigation}: HomeProps) {
   const width = Dimensions.get('window').width;
   const bannerW = Math.min(width, 360);
   const [promoIndex, setPromoIndex] = useState(0);
@@ -70,7 +73,7 @@ export default function HomeScreen({onOpenOtp}: HomeProps) {
               <MaterialCommunityIcons name="chevron-right" size={18} color={COLORS.mid} />
             </View>
           </View>
-          <View style={styles.card}>
+          <TouchableOpacity style={styles.card} activeOpacity={0.9} onPress={onNavigateMiBolsillo ?? (() => navigation?.navigate?.('MiBolsillo'))}>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons name="wallet" size={20} color={COLORS.green} />
               <Text style={styles.cardTitle}>Mi Bolsillo</Text>
@@ -80,7 +83,7 @@ export default function HomeScreen({onOpenOtp}: HomeProps) {
               <Text style={styles.cardLink}>Ver más</Text>
               <MaterialCommunityIcons name="chevron-right" size={18} color={COLORS.mid} />
             </View>
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.prefCard}>

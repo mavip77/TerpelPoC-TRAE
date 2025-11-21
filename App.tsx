@@ -6,9 +6,22 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {
+  Platform,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import OtpModal from './src/components/OtpModal';
 import HomeScreen from './src/screens/HomeScreen';
+import MiBolsillo from './src/screens/MiBolsillo';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+
+const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   const [seedCode, setSeedCode] = useState<string | undefined>(undefined);
@@ -48,14 +61,26 @@ function App(): React.JSX.Element {
     };
   }, []);
 
-
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle={'dark-content'} />
       <View style={styles.container}>
-        <HomeScreen onOpenOtp={() => setModalVisible(true)} />
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{headerShown: false}}>
+              <Stack.Screen
+                name="Home"
+                component={HomeScreen as any}
+                initialParams={{}}
+              />
+              <Stack.Screen name="MiBolsillo" component={MiBolsillo as any} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
         {Platform.OS === 'android' ? (
-          <Text style={styles.signature}>Hash de app: {signature ?? '...'}</Text>
+          <Text style={styles.signature}>
+            Hash de app: {signature ?? '...'}
+          </Text>
         ) : null}
         <OtpModal
           visible={modalVisible}
@@ -70,7 +95,11 @@ function App(): React.JSX.Element {
 
 async function mockValidateOtp(code: string): Promise<boolean> {
   await new Promise(r => setTimeout(r, 600));
-  return code.length >= MIN_LEN && code.length <= MAX_LEN && /^[0-9]{4,8}$/.test(code);
+  return (
+    code.length >= MIN_LEN &&
+    code.length <= MAX_LEN &&
+    /^[0-9]{4,8}$/.test(code)
+  );
 }
 
 const MIN_LEN = 4;
@@ -79,7 +108,13 @@ const MAX_LEN = 8;
 const styles = StyleSheet.create({
   safe: {flex: 1, backgroundColor: '#f6f8fa'},
   container: {flex: 1},
-  signature: {position: 'absolute', top: 8, left: 12, fontSize: 12, color: '#57606a'},
+  signature: {
+    position: 'absolute',
+    top: 8,
+    left: 12,
+    fontSize: 12,
+    color: '#57606a',
+  },
 });
 
 export default App;
