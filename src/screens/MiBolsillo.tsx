@@ -1,7 +1,8 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Alert, FlatList, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Modal from 'react-native-modal';
+import * as Keychain from 'react-native-keychain';
 
 type Props = {
   navigation: any;
@@ -27,6 +28,14 @@ export default function MiBolsillo({navigation}: Props) {
   const [beneficiosOpen, setBeneficiosOpen] = useState<boolean>(true);
   const [detailOpen, setDetailOpen] = useState<boolean>(false);
   const [selectedTx, setSelectedTx] = useState<any | null>(null);
+  const [recipientName, setRecipientName] = useState<string>('');
+
+  type Favorito = {name: string; docType: 'CC' | 'CE'; docNumber: string};
+  const [favoritos, setFavoritos] = useState<Favorito[]>([]);
+  const [favListOpen, setFavListOpen] = useState<boolean>(false);
+  const [favConfirmOpen, setFavConfirmOpen] = useState<boolean>(false);
+  const [selectedFav, setSelectedFav] = useState<Favorito | null>(null);
+  const [favAmount, setFavAmount] = useState<string>('');
 
   const montoNum = useMemo(() => {
     const n = Number(String(monto).replace(/[^0-9]/g, ''));
@@ -36,9 +45,15 @@ export default function MiBolsillo({navigation}: Props) {
   const docValid = useMemo(() => {
     const t = docType;
     const v = String(docNumber).replace(/\D/g, '');
-    if (!t) return false;
-    if (t === 'CC') return v.length >= 6 && v.length <= 10;
-    if (t === 'CE') return v.length >= 6 && v.length <= 12;
+    if (!t) {
+      return false;
+    }
+    if (t === 'CC') {
+      return v.length >= 6 && v.length <= 10;
+    }
+    if (t === 'CE') {
+      return v.length >= 6 && v.length <= 12;
+    }
     return false;
   }, [docType, docNumber]);
 
@@ -52,10 +67,34 @@ export default function MiBolsillo({navigation}: Props) {
     if (!canSend) {
       return;
     }
-    Alert.alert('Transferencia enviada', `Se transfirieron $ ${montoNum} a documento ${docType}-${docNumber}`);
+    const snapshot = {name: recipientName.trim(), docType: docType!, docNumber: docNumber};
+    Alert.alert('Transferencia enviada', `Se transfirieron $ ${montoNum.toLocaleString('es-CO')} a documento ${docType}-${docNumber}`);
     setSaldo(s => s - montoNum);
+    Alert.alert(
+      '¿Agregar a favoritos?',
+      snapshot.name ? `¿Deseas agregar a ${snapshot.name} (${snapshot.docType}-${snapshot.docNumber}) como favorito?` : `¿Deseas agregar el destinatario (${snapshot.docType}-${snapshot.docNumber}) como favorito?`,
+      [
+        {text: 'No', style: 'cancel'},
+        {
+          text: 'Agregar',
+          onPress: async () => {
+            try {
+              const list = await loadFavoritos();
+              const exists = list.some(f => f.docType === snapshot.docType && f.docNumber === snapshot.docNumber);
+              const next = exists ? list.map(f => (f.docType === snapshot.docType && f.docNumber === snapshot.docNumber ? {name: snapshot.name || f.name, docType: f.docType, docNumber: f.docNumber} : f)) : [...list, {name: snapshot.name || 'Sin nombre', docType: snapshot.docType, docNumber: snapshot.docNumber}];
+              await saveFavoritos(next);
+              setFavoritos(next);
+              Alert.alert('Favorito guardado', 'El destinatario fue agregado a tus favoritos.');
+            } catch (e) {
+              Alert.alert('Error', 'No se pudo guardar el favorito.');
+            }
+          },
+        },
+      ],
+    );
     setDocType(undefined);
     setDocNumber('');
+    setRecipientName('');
     setMonto('');
   };
 
@@ -72,6 +111,38 @@ export default function MiBolsillo({navigation}: Props) {
       {id: 't2', type: 'debit', title: 'Transferencia', partner: 'Aldemar Parra', amount: -2000, date: '2025-04-22'},
       {id: 't3', type: 'credit', title: 'Transferencia', partner: 'Aldemar Parra', amount: 2000, date: '2025-04-15'},
     ];
+  }, []);
+
+  const loadFavoritos = async (): Promise<Favorito[]> => {
+    try {
+      const creds = await Keychain.getGenericPassword({service: 'favorites'});
+      if (!creds) return [];
+      const raw = creds.password;
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+      return [];
+    } catch {
+      return [];
+    }
+  };
+
+  const saveFavoritos = async (list: Favorito[]) => {
+    const json = JSON.stringify(list);
+    await Keychain.setGenericPassword('favorites', json, {service: 'favorites'});
+  };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const creds = await Keychain.getGenericPassword({service: 'favorites'});
+        if (creds) {
+          const parsed = JSON.parse(creds.password);
+          if (Array.isArray(parsed)) {
+            setFavoritos(parsed);
+          }
+        }
+      } catch {}
+    })();
   }, []);
 
   return (
@@ -114,6 +185,14 @@ export default function MiBolsillo({navigation}: Props) {
             <Text style={styles.cardTitle}>Transferir saldo</Text>
             <Text style={styles.balanceText}>Saldo: $ {saldo.toLocaleString('es-CO')}</Text>
 
+            <Text style={styles.label}>Nombre del destinatario</Text>
+            <TextInput
+              style={styles.input}
+              value={recipientName}
+              onChangeText={t => setRecipientName(t)}
+              placeholder="Ingresa el nombre"
+            />
+
             <Text style={styles.label}>Tipo de documento</Text>
             <View style={styles.comboRow}>
               <TouchableOpacity style={[styles.comboItem, docType === 'CC' ? styles.comboActive : null]} onPress={() => setDocType('CC')}>
@@ -150,6 +229,15 @@ export default function MiBolsillo({navigation}: Props) {
               onPress={trySend}
               style={[styles.primaryBtn, !canSend ? styles.primaryBtnDisabled : null]}>
               <Text style={styles.primaryBtnText}>Enviar para realizar la transferencia</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              disabled={favoritos.length === 0}
+              onPress={() => setFavListOpen(true)}
+              style={[styles.secondaryBtn, favoritos.length === 0 ? styles.secondaryBtnDisabled : null]}
+            >
+              <MaterialCommunityIcons name="star" size={18} color={favoritos.length === 0 ? '#9CA3AF' : COLORS.red} />
+              <Text style={[styles.secondaryBtnText, favoritos.length === 0 ? styles.secondaryBtnTextDisabled : null]}>Enviar a favoritos</Text>
             </TouchableOpacity>
           </View>
         ) : null}
@@ -236,6 +324,78 @@ export default function MiBolsillo({navigation}: Props) {
             <TouchableOpacity style={styles.supportBtn}><MaterialCommunityIcons name="whatsapp" size={18} color={COLORS.red} /><Text style={styles.supportText}>Chat de soporte</Text></TouchableOpacity>
           </View>
         </Modal>
+
+        <Modal isVisible={favListOpen} style={styles.modal} onBackdropPress={() => setFavListOpen(false)} swipeDirection="down" onSwipeComplete={() => setFavListOpen(false)} backdropOpacity={0.5} animationIn="slideInUp" animationOut="slideOutDown">
+          <View style={styles.sheet}>
+            <View style={styles.sheetHeader}>
+              <Text style={styles.cardTitle}>Tus favoritos</Text>
+              <TouchableOpacity onPress={() => setFavListOpen(false)}><MaterialCommunityIcons name="close" size={20} color={COLORS.mid} /></TouchableOpacity>
+            </View>
+            {favoritos.length === 0 ? (
+              <Text style={styles.hint}>No tienes favoritos registrados.</Text>
+            ) : (
+              <FlatList
+                data={favoritos}
+                keyExtractor={(i, idx) => `${i.docType}-${i.docNumber}-${idx}`}
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    style={styles.favItem}
+                    onPress={() => {
+                      setSelectedFav(item);
+                      setFavAmount('');
+                      setFavListOpen(false);
+                      setFavConfirmOpen(true);
+                    }}
+                  >
+                    <View style={styles.favIcon}><MaterialCommunityIcons name="account" size={18} color={COLORS.mid} /></View>
+                    <View style={{flex: 1, marginLeft: 10}}>
+                      <Text style={styles.txTitle}>{item.name}</Text>
+                      <Text style={styles.txSub}>{item.docType}-{item.docNumber}</Text>
+                    </View>
+                    <MaterialCommunityIcons name="chevron-right" size={20} color={COLORS.mid} />
+                  </TouchableOpacity>
+                )}
+              />
+            )}
+          </View>
+        </Modal>
+
+        <Modal isVisible={favConfirmOpen} style={styles.modal} onBackdropPress={() => setFavConfirmOpen(false)} swipeDirection="down" onSwipeComplete={() => setFavConfirmOpen(false)} backdropOpacity={0.5} animationIn="slideInUp" animationOut="slideOutDown">
+          <View style={styles.sheet}>
+            <View style={styles.sheetHeader}>
+              <Text style={styles.cardTitle}>Confirmar transferencia</Text>
+              <TouchableOpacity onPress={() => setFavConfirmOpen(false)}><MaterialCommunityIcons name="close" size={20} color={COLORS.mid} /></TouchableOpacity>
+            </View>
+            {selectedFav ? (
+              <>
+                <View style={styles.detailRow}><Text style={styles.detailLabel}>Destinatario</Text><Text style={styles.detailValue}>{selectedFav.name}</Text></View>
+                <View style={styles.detailRow}><Text style={styles.detailLabel}>Documento</Text><Text style={styles.detailValue}>{selectedFav.docType}-{selectedFav.docNumber}</Text></View>
+                <Text style={[styles.label, {marginTop: 16}]}>Monto a transferir</Text>
+                <TextInput
+                  style={styles.input}
+                  value={favAmount}
+                  onChangeText={t => setFavAmount(t.replace(/[^0-9]/g, ''))}
+                  keyboardType="number-pad"
+                  placeholder="$ 0"
+                />
+                <TouchableOpacity
+                  disabled={Number(favAmount || '0') <= 0 || Number(favAmount || '0') >= saldo}
+                  style={[styles.primaryBtn, Number(favAmount || '0') <= 0 || Number(favAmount || '0') >= saldo ? styles.primaryBtnDisabled : null]}
+                  onPress={() => {
+                    const val = Number(String(favAmount).replace(/[^0-9]/g, ''));
+                    if (val <= 0 || val >= saldo) return;
+                    setSaldo(s => s - val);
+                    setFavConfirmOpen(false);
+                    Alert.alert('Transferencia enviada', `Se transfirieron $ ${val.toLocaleString('es-CO')} a ${selectedFav.name}`);
+                    setTab('transferir');
+                  }}
+                >
+                  <Text style={styles.primaryBtnText}>Confirmar</Text>
+                </TouchableOpacity>
+              </>
+            ) : null}
+          </View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -272,6 +432,10 @@ const styles = StyleSheet.create({
   primaryBtn: {marginTop: 20, height: 48, backgroundColor: COLORS.red, borderRadius: 12, alignItems: 'center', justifyContent: 'center'},
   primaryBtnDisabled: {backgroundColor: '#FCA5A5'},
   primaryBtnText: {color: COLORS.white, fontWeight: '700'},
+  secondaryBtn: {marginTop: 12, height: 44, borderRadius: 12, borderWidth: 1, borderColor: '#E5E7EB', backgroundColor: COLORS.white, alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8},
+  secondaryBtnDisabled: {borderColor: '#E5E7EB', backgroundColor: '#F9FAFB'},
+  secondaryBtnText: {color: COLORS.red, fontWeight: '700'},
+  secondaryBtnTextDisabled: {color: '#9CA3AF'},
   presetsRow: {flexDirection: 'row', gap: 8, marginTop: 12},
   presetBtn: {borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, backgroundColor: '#F9FAFB'},
   presetActive: {borderColor: COLORS.red, backgroundColor: COLORS.white},
@@ -307,4 +471,6 @@ const styles = StyleSheet.create({
   detailValue: {color: COLORS.dark, fontWeight: '600'},
   supportBtn: {flexDirection: 'row', alignItems: 'center', gap: 8, borderWidth: 1, borderColor: '#E5E7EB', borderRadius: 12, padding: 12, marginTop: 16},
   supportText: {color: COLORS.red, fontWeight: '700'},
+  favItem: {flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 12, borderBottomWidth: 1, borderBottomColor: '#F1F5F9'},
+  favIcon: {width: 28, height: 28, borderRadius: 14, backgroundColor: '#F1F5F9', alignItems: 'center', justifyContent: 'center'},
 });
