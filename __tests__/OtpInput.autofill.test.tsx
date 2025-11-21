@@ -1,5 +1,6 @@
 import React from 'react';
-import renderer, {act} from 'react-test-renderer';
+import * as renderer from 'react-test-renderer';
+import {act} from 'react-test-renderer';
 import OtpInput from '../src/components/OtpInput';
 
 describe('OtpInput autofill from seedCode', () => {
