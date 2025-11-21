@@ -132,7 +132,7 @@ export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputPro
       <Text style={styles.title}>Ingresa el código OTP</Text>
       <View style={styles.row}>
         {values.map((val, i) => (
-          <Animated.View key={i} style={[styles.box, {transform: [{scale: scales[i]}]}] }>
+          <Animated.View key={i} style={[styles.box, i === focusedIndex ? styles.boxActive : null, {transform: [{scale: scales[i]}]}]}>
             <TextInput
               ref={r => (inputs.current[i] = r)}
               value={val}
@@ -177,12 +177,12 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   box: {
-    width: 52,
-    height: 60,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#d0d7de',
-    backgroundColor: '#ffffff',
+    width: 48,
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    backgroundColor: '#F9FAFB',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -190,10 +190,12 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
+  boxActive: {borderColor: '#E31E24'},
   input: {
     fontSize: 24,
     fontWeight: '700',
     textAlign: 'center',
+    color: '#1F2937',
     padding: 0,
     margin: 0,
     width: '100%',

@@ -6,13 +6,13 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {Platform, SafeAreaView, StatusBar, StyleSheet, Text, View} from 'react-native';
-import OtpInput from './src/components/OtpInput';
+import {Platform, SafeAreaView, StatusBar, StyleSheet, View} from 'react-native';
+import OtpModal from './src/components/OtpModal';
+import HomeScreen from './src/screens/HomeScreen';
 
 function App(): React.JSX.Element {
-  const [status, setStatus] = useState<string>('');
   const [seedCode, setSeedCode] = useState<string | undefined>(undefined);
-  const [signature, setSignature] = useState<string | undefined>(undefined);
+  const [modalVisible, setModalVisible] = useState<boolean>(true);
 
   useEffect(() => {
     let remove: (() => void) | undefined;
@@ -25,10 +25,7 @@ function App(): React.JSX.Element {
           /* webpackChunkName: "otp-verify" */
           'react-native-otp-verify'
         );
-        try {
-          const hashes: string[] = await mod.getHash();
-          if (hashes && hashes.length > 0) setSignature(hashes[0]);
-        } catch {}
+        // getHash can be used if needed
         remove = await mod.startOtpListener((message: string) => {
           const match = message.match(/\b(\d{4,8})\b/);
           if (match && match[1]) {
@@ -45,21 +42,18 @@ function App(): React.JSX.Element {
     };
   }, []);
 
-  const handleComplete = async (code: string) => {
-    setStatus('Validando OTP...');
-    const ok = await mockValidateOtp(code);
-    setStatus(ok ? 'OTP válido' : 'OTP inválido');
-  };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle={'dark-content'} />
       <View style={styles.container}>
-        <OtpInput length={6} onComplete={handleComplete} seedCode={seedCode} />
-        <Text style={styles.status}>{status}</Text>
-        {Platform.OS === 'android' ? (
-          <Text style={styles.signature}>Hash de app: {signature ?? '...'}</Text>
-        ) : null}
+        <HomeScreen onOpenOtp={() => setModalVisible(true)} />
+        <OtpModal
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          seedCode={seedCode}
+          onVerify={mockValidateOtp}
+        />
       </View>
     </SafeAreaView>
   );
@@ -75,9 +69,7 @@ const MAX_LEN = 8;
 
 const styles = StyleSheet.create({
   safe: {flex: 1, backgroundColor: '#f6f8fa'},
-  container: {flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24},
-  status: {marginTop: 24, fontSize: 16},
-  signature: {marginTop: 8, fontSize: 12, color: '#57606a'},
+  container: {flex: 1},
 });
 
 export default App;
