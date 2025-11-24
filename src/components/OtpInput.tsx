@@ -1,5 +1,12 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Animated, Keyboard, Platform, StyleSheet, TextInput, View} from 'react-native';
+import {
+  Animated,
+  Keyboard,
+  Platform,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 
 type OtpInputProps = {
   length?: number;
@@ -10,22 +17,34 @@ type OtpInputProps = {
 const MIN_LEN = 4;
 const MAX_LEN = 8;
 
-        export default function OtpInput({length = 6, onComplete, seedCode}: OtpInputProps) {
-          const otpLength = useMemo(() =>
-            Math.max(MIN_LEN, Math.min(MAX_LEN, Math.floor(length || MIN_LEN))),
-          [length]);
+export default function OtpInput({
+  length = 6,
+  onComplete,
+  seedCode,
+}: OtpInputProps) {
+  const otpLength = useMemo(
+    () => Math.max(MIN_LEN, Math.min(MAX_LEN, Math.floor(length || MIN_LEN))),
+    [length],
+  );
 
-          const [values, setValues] = useState<string[]>(Array(otpLength).fill(''));
-          const [focusedIndex, setFocusedIndex] = useState<number>(0);
-          const manualRef = useRef<boolean>(false);
-          const inputs = useRef<Array<TextInput | null>>([]);
-          const scales = useRef<Animated.Value[]>(
-            Array(otpLength)
-              .fill(0)
-              .map(() => new Animated.Value(1)),
-          ).current;
-          const rowOpacity = useRef(new Animated.Value(1)).current;
-          const hasAnyRef = useRef<boolean>(false);
+  const [values, setValues] = useState<string[]>(Array(otpLength).fill(''));
+  const [focusedIndex, setFocusedIndex] = useState<number>(0);
+  const manualRef = useRef<boolean>(false);
+  const inputs = useRef<Array<TextInput | null>>([]);
+  const makeVal = (n: number) => {
+    const V: any = (Animated as any)?.Value;
+    if (typeof V === 'function') {
+      return new V(n);
+    }
+    return {setValue: () => {}, __getValue: () => n} as any;
+  };
+  const scales = useRef<Animated.Value[]>(
+    Array(otpLength)
+      .fill(0)
+      .map(() => makeVal(1)),
+  ).current;
+  const rowOpacity = useRef(new Animated.Value(1)).current;
+  const hasAnyRef = useRef<boolean>(false);
 
   useEffect(() => {
     const first = inputs.current[0];
@@ -56,11 +75,29 @@ const MAX_LEN = 8;
       manualRef.current = false;
     };
     if (manualRef.current && hasAnyRef.current) {
-      Animated.timing(rowOpacity, {toValue: 0, duration: 150, useNativeDriver: true}).start(() => {
+      if (typeof (Animated as any)?.timing === 'function') {
+        (Animated as any)
+          .timing(rowOpacity, {
+            toValue: 0,
+            duration: 150,
+            useNativeDriver: true,
+          })
+          .start(() => {
+            setValues(Array(otpLength).fill(''));
+            hasAnyRef.current = false;
+            (Animated as any)
+              .timing(rowOpacity, {
+                toValue: 1,
+                duration: 120,
+                useNativeDriver: true,
+              })
+              .start(() => apply());
+          });
+      } else {
         setValues(Array(otpLength).fill(''));
         hasAnyRef.current = false;
-        Animated.timing(rowOpacity, {toValue: 1, duration: 120, useNativeDriver: true}).start(() => apply());
-      });
+        apply();
+      }
     } else {
       setTimeout(apply, 0);
     }
@@ -90,13 +127,13 @@ const MAX_LEN = 8;
     }
   }, [focusedIndex, otpLength, scales]);
 
-          const handleChange = (text: string, index: number) => {
-            let t = text;
-            if (!t) {
-              return;
-            }
-            manualRef.current = true;
-            hasAnyRef.current = true;
+  const handleChange = (text: string, index: number) => {
+    let t = text;
+    if (!t) {
+      return;
+    }
+    manualRef.current = true;
+    hasAnyRef.current = true;
 
     if (t.length > 1) {
       const merged = [...values];
@@ -119,9 +156,9 @@ const MAX_LEN = 8;
       return;
     }
 
-            const next = [...values];
-            next[index] = t;
-            setValues(next);
+    const next = [...values];
+    next[index] = t;
+    setValues(next);
 
     if (index < otpLength - 1) {
       inputs.current[index + 1]?.focus();
@@ -132,7 +169,7 @@ const MAX_LEN = 8;
       const code = next.join('');
       onComplete?.(code);
     }
-          };
+  };
 
   const handleKeyPress = (e: any, index: number) => {
     if (e.nativeEvent.key === 'Backspace') {
@@ -152,30 +189,39 @@ const MAX_LEN = 8;
 
   return (
     <View style={styles.container}>
-              <Animated.View style={[styles.row, {opacity: rowOpacity}] }>
-                {values.map((val, i) => (
-                  <Animated.View key={i} style={[styles.box, (i === focusedIndex || !!values[i]) ? styles.boxActive : null, (i === focusedIndex || !!values[i]) ? styles.boxActiveBg : null, {transform: [{scale: scales[i]}]}]}>
-                    <TextInput
-                      ref={r => (inputs.current[i] = r)}
-                      value={val}
-                      onChangeText={t => handleChange(t.replace(/\s/g, ''), i)}
-                      onFocus={() => setFocusedIndex(i)}
-                      onKeyPress={e => handleKeyPress(e, i)}
-                      selectionColor="#E31E24"
-                      style={styles.input}
-                      maxLength={1}
-                      keyboardType="number-pad"
-                      autoFocus={i === 0}
-                      textContentType={Platform.OS === 'ios' ? 'oneTimeCode' : 'none'}
-                      autoComplete="one-time-code"
-                      enterKeyHint="next"
-                      importantForAutofill="yes"
-                      autoCorrect={false}
-                      contextMenuHidden
-                    />
-                  </Animated.View>
-                ))}
-              </Animated.View>
+      <Animated.View style={[styles.row, {opacity: rowOpacity}]}>
+        {values.map((val, i) => (
+          <Animated.View
+            key={i}
+            style={[
+              styles.box,
+              i === focusedIndex || !!values[i] ? styles.boxActive : null,
+              i === focusedIndex || !!values[i] ? styles.boxActiveBg : null,
+              {transform: [{scale: scales[i]}]},
+            ]}>
+            <TextInput
+              testID={`otp-${i}`}
+              accessibilityLabel={`otp-${i}`}
+              ref={r => (inputs.current[i] = r)}
+              value={val}
+              onChangeText={t => handleChange(t.replace(/\s/g, ''), i)}
+              onFocus={() => setFocusedIndex(i)}
+              onKeyPress={e => handleKeyPress(e, i)}
+              selectionColor="#E31E24"
+              style={styles.input}
+              maxLength={1}
+              keyboardType="number-pad"
+              autoFocus={i === 0}
+              textContentType={Platform.OS === 'ios' ? 'oneTimeCode' : 'none'}
+              autoComplete="one-time-code"
+              enterKeyHint="next"
+              importantForAutofill="yes"
+              autoCorrect={false}
+              contextMenuHidden
+            />
+          </Animated.View>
+        ))}
+      </Animated.View>
     </View>
   );
 }

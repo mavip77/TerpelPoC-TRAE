@@ -2,6 +2,7 @@ import React from 'react';
 import * as renderer from 'react-test-renderer';
 import {act} from 'react-test-renderer';
 import OtpInput from '../src/components/OtpInput';
+jest.useFakeTimers();
 
 describe('OtpInput autofill from seedCode', () => {
   it('fills and calls onComplete when seedCode has 6 digits and no manual input', () => {
@@ -13,6 +14,9 @@ describe('OtpInput autofill from seedCode', () => {
       tree.update(
         <OtpInput length={6} onComplete={onComplete} seedCode={'183742'} />,
       );
+    });
+    act(() => {
+      jest.runOnlyPendingTimers();
     });
     expect(onComplete).toHaveBeenCalledWith('183742');
   });
@@ -38,6 +42,9 @@ describe('OtpInput autofill from seedCode', () => {
       component!.update(
         <OtpInput length={6} onComplete={onComplete} seedCode={'123456'} />,
       );
+    });
+    act(() => {
+      jest.runOnlyPendingTimers();
     });
 
     expect(onComplete).toHaveBeenCalledWith('123456');
