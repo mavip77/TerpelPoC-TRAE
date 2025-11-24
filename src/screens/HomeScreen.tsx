@@ -77,6 +77,10 @@ export default function HomeScreen({
           </View>
           <Text style={styles.greet}>¡Hola Miguel 👋!</Text>
           <TouchableOpacity
+            accessibilityLabel="open-otp"
+            testID="open-otp"
+            accessibilityRole="button"
+            accessible
             onPress={() => {
               if (openingOtp || isOtpVisible) {
                 return;

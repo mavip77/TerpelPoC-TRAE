@@ -1,5 +1,16 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {ActivityIndicator, Animated, Dimensions, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {
+  ActivityIndicator,
+  Animated,
+  Dimensions,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Modal from 'react-native-modal';
 import OtpInput from './OtpInput';
 
@@ -11,10 +22,22 @@ type Props = {
   onVerify?: (code: string) => Promise<boolean>;
 };
 
-export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX67', seedCode, onVerify}: Props) {
+export default function OtpModal({
+  visible,
+  onClose,
+  phoneMask = '+57 XXX XXX XX67',
+  seedCode,
+  onVerify,
+}: Props) {
   const [code, setCode] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorShake] = useState(new Animated.Value(0));
+  const [errorShake] = useState(() => {
+    const V: any = (Animated as any)?.Value;
+    if (typeof V === 'function') {
+      return new V(0);
+    }
+    return {setValue: () => {}, __getValue: () => 0} as any;
+  });
   const [timer, setTimer] = useState<number>(60);
   const canVerify = code.length === 6 && /^[0-9]{6}$/.test(code) && !loading;
   const autoSubmitRef = useRef<NodeJS.Timeout | null>(null);
@@ -27,6 +50,22 @@ export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX6
     setLoading(false);
     setTimer(60);
   }, [visible]);
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    if (seedCode && /^[0-9]{6}$/.test(seedCode)) {
+      setCode(seedCode);
+      if (autoSubmitRef.current) {
+        clearTimeout(autoSubmitRef.current);
+        autoSubmitRef.current = null;
+      }
+      autoSubmitRef.current = setTimeout(() => {
+        handleVerify();
+      }, 500);
+    }
+  }, [visible, seedCode, handleVerify]);
 
   useEffect(() => {
     if (!visible && autoSubmitRef.current) {
@@ -62,17 +101,44 @@ export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX6
     }
   };
 
-  const triggerShake = () => {
-    Animated.sequence([
-      Animated.timing(errorShake, {toValue: 10, duration: 50, useNativeDriver: true}),
-      Animated.timing(errorShake, {toValue: -10, duration: 50, useNativeDriver: true}),
-      Animated.timing(errorShake, {toValue: 8, duration: 50, useNativeDriver: true}),
-      Animated.timing(errorShake, {toValue: -8, duration: 50, useNativeDriver: true}),
-      Animated.timing(errorShake, {toValue: 0, duration: 50, useNativeDriver: true}),
-    ]).start();
-  };
+  const triggerShake = useCallback(() => {
+    if (
+      typeof (Animated as any)?.sequence === 'function' &&
+      typeof (Animated as any)?.timing === 'function'
+    ) {
+      (Animated as any)
+        .sequence([
+          (Animated as any).timing(errorShake, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: -10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: 8,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: -8,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ])
+        .start();
+    }
+  }, [errorShake]);
 
-  const handleVerify = async () => {
+  const handleVerify = useCallback(async () => {
     if (!canVerify) {
       return;
     }
@@ -84,7 +150,7 @@ export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX6
     } else {
       triggerShake();
     }
-  };
+  }, [canVerify, onVerify, onClose, code, triggerShake]);
 
   const height = Math.floor(Dimensions.get('window').height * 0.78);
 
@@ -107,21 +173,41 @@ export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX6
       <View style={[styles.sheet, {height}]}>
         <View style={styles.header}>
           <View style={styles.handle} />
-          <TouchableOpacity style={styles.closeBtn} onPress={onClose} accessibilityRole="button" accessibilityLabel="Cerrar">
+          <TouchableOpacity
+            style={styles.closeBtn}
+            onPress={onClose}
+            accessibilityRole="button"
+            accessibilityLabel="close-otp"
+            testID="close-otp">
             <Text style={styles.closeIcon}>×</Text>
           </TouchableOpacity>
         </View>
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
           <Animated.View style={{transform: [{translateX: errorShake}]}}>
             <Text style={styles.title}>Ingresa el código</Text>
-            <Text style={styles.subtitle}>Hemos enviado un código de 6 dígitos al número {phoneMask}</Text>
+            <Text style={styles.subtitle}>
+              Hemos enviado un código de 6 dígitos al número {phoneMask}
+            </Text>
             <View style={styles.otpArea}>
-              <OtpInput length={6} onComplete={onComplete} seedCode={seedCode} />
+              <OtpInput
+                length={6}
+                onComplete={onComplete}
+                seedCode={seedCode}
+              />
             </View>
             <View style={styles.resendRow}>
               <Text style={styles.resendText}>¿No recibiste el código?</Text>
               <Pressable disabled={timer > 0} onPress={() => setTimer(60)}>
-                <Text style={[styles.resendBtn, timer > 0 && styles.resendDisabled]}>{timer > 0 ? `Reenviar en ${formattedTimer}` : 'Reenviar código'}</Text>
+                <Text
+                  style={[
+                    styles.resendBtn,
+                    timer > 0 && styles.resendDisabled,
+                  ]}>
+                  {timer > 0
+                    ? `Reenviar en ${formattedTimer}`
+                    : 'Reenviar código'}
+                </Text>
               </Pressable>
             </View>
             <Pressable
@@ -131,7 +217,11 @@ export default function OtpModal({visible, onClose, phoneMask = '+57 XXX XXX XX6
                 styles.primaryBtn,
                 !canVerify ? styles.primaryBtnDisabled : null,
                 pressed && canVerify ? {opacity: 0.9} : null,
-              ]}>
+              ]}
+              accessibilityLabel="verify-otp"
+              accessibilityRole="button"
+              accessible
+              testID="verify-otp">
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" />
               ) : (
