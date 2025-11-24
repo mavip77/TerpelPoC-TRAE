@@ -1,0 +1,19 @@
+{
+  "ios": {
+    "platformName": "iOS",
+    "appium:automationName": "XCUITest",
+    "appium:deviceName": "iPhone 16",
+    "appium:udid": "B82B101C-26C9-4B8A-9031-ED406810894B",
+    "appium:platformVersion": "18.1",
+    "appium:app": "./ios/build/Build/Products/Debug-iphonesimulator/TerpelPoC.app",
+    "appium:autoAcceptAlerts": true
+  },
+  "android": {
+    "platformName": "Android",
+    "appium:automationName": "UiAutomator2",
+    "appium:deviceName": "emulator-5554",
+    "appium:udid": "emulator-5554",
+    "appium:app": "./android/app/build/outputs/apk/debug/app-debug.apk",
+    "appium:autoGrantPermissions": true
+  }
+}
