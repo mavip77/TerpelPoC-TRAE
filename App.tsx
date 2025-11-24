@@ -25,7 +25,7 @@ const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   const [seedCode, setSeedCode] = useState<string | undefined>(undefined);
-  const [modalVisible, setModalVisible] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -68,11 +68,15 @@ function App(): React.JSX.Element {
         <SafeAreaProvider>
           <NavigationContainer>
             <Stack.Navigator screenOptions={{headerShown: false}}>
-              <Stack.Screen
-                name="Home"
-                component={HomeScreen as any}
-                initialParams={{}}
-              />
+              <Stack.Screen name="Home">
+                {props => (
+                  <HomeScreen
+                    onOpenOtp={() => setModalVisible(true)}
+                    navigation={props.navigation}
+                    isOtpVisible={modalVisible}
+                  />
+                )}
+              </Stack.Screen>
               <Stack.Screen name="MiBolsillo" component={MiBolsillo as any} />
             </Stack.Navigator>
           </NavigationContainer>
