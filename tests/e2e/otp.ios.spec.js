@@ -1,4 +1,4 @@
-const { $, expect } = require('@wdio/globals');
+const { $, driver } = require('@wdio/globals');
 
 describe('OTP Modal iOS', () => {
   it('abre y cierra el modal OTP', async () => {

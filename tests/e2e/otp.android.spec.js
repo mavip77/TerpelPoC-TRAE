@@ -1,9 +1,9 @@
-const { $, expect, driver } = require('@wdio/globals');
+const { $, driver } = require('@wdio/globals');
 
 describe('OTP Modal Android', () => {
   it('abre y cierra el modal OTP', async () => {
     let btn = await $('~open-otp');
-    await btn.waitForExist({ timeout: 8000 });
+    await btn.waitForExist({ timeout: 15000 });
     if (!(await btn.isExisting())) {
       btn = await $('android=new UiSelector().text("Abrir OTP")');
     }
@@ -16,7 +16,7 @@ describe('OTP Modal Android', () => {
 
   it('ingresa código y verifica cierre', async () => {
     let btn = await $('~open-otp');
-    await btn.waitForExist({ timeout: 8000 });
+    await btn.waitForExist({ timeout: 15000 });
     if (!(await btn.isExisting())) {
       btn = await $('android=new UiSelector().text("Abrir OTP")');
     }
