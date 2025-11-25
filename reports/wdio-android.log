@@ -1,0 +1,487 @@
+
+Execution of 2 workers started at 2025-11-25T17:28:03.282Z
+
+2025-11-25T17:28:03.292Z INFO @wdio/cli:launcher: Run onPrepare hook
+2025-11-25T17:28:03.293Z INFO @wdio/cli:launcher: Run onWorkerStart hook
+2025-11-25T17:28:03.294Z INFO @wdio/xvfb: XvfbManager.init() called
+2025-11-25T17:28:03.294Z INFO @wdio/xvfb: Xvfb not needed on current platform
+2025-11-25T17:28:03.294Z INFO @wdio/local-runner: Start worker 0-0 with arg: wdio.android.conf.js
+2025-11-25T17:28:03.305Z INFO @wdio/xvfb:ProcessFactory: xvfb-run not found, falling back to regular fork
+2025-11-25T17:28:03.305Z INFO @wdio/xvfb:ProcessFactory: ProcessFactory: shouldRun=false, isAvailable=false
+2025-11-25T17:28:03.305Z INFO @wdio/xvfb:ProcessFactory: Creating worker process with regular fork
+[0-0] 2025-11-25T17:28:04.136Z INFO @wdio/local-runner: Run worker command: run
+[0-0] RUNNING in Android on Android - file:///tests/e2e/app.android.spec.js
+[0-0] 2025-11-25T17:28:04.274Z INFO webdriver: Initiate new session using the WebDriver protocol
+[0-0] 2025-11-25T17:28:04.275Z INFO @wdio/utils: Connecting to existing driver at http://127.0.0.1:4723/
+[0-0] 2025-11-25T17:28:04.281Z INFO webdriver: [POST] http://127.0.0.1:4723/session
+[0-0] 2025-11-25T17:28:09.593Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:09.594Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/element
+[0-0] 2025-11-25T17:28:09.594Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.463Z INFO webdriver: RESULT {
+[0-0]   error: 'no such element',
+[0-0]   message: 'An element could not be located on the page using the given search parameters.',
+[0-0]   stacktrace: 'NoSuchElementError: An element could not be located on the page using the given search parameters.\n' +
+[0-0]     '    at AndroidUiautomator2Driver.findElOrEls (/Users/mevp/TerpelPoC/node_modules/appium-uiautomator2-driver/node_modules/appium-android-driver/lib/commands/find.ts:87:11)\n' +
+[0-0]     '    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+[0-0]     '    at AndroidUiautomator2Driver.findElOrElsWithProcessing (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:60:12)\n' +
+[0-0]     '    at AndroidUiautomator2Driver.findElement (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:75:12)'
+[0-0] }
+[0-0] 2025-11-25T17:28:10.467Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.467Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.467Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.488Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:10.568Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.568Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.568Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.580Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:10.668Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.668Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.668Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.681Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:10.767Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.767Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.767Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.784Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:10.867Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.867Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.867Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.878Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:10.967Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:10.967Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:10.967Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:10.982Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:11.067Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:11.067Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:11.067Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:11.088Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:11.167Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:11.167Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:11.167Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:11.273Z INFO webdriver: RESULT []
+[0-0] 2025-11-25T17:28:11.274Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:11.274Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:11.274Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:13.998Z INFO webdriver: RESULT [
+[0-0]   {
+[0-0]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00ef-ffff-ffff00000020',
+[0-0]     ELEMENT: '00000000-0000-00ef-ffff-ffff00000020'
+[0-0]   }
+[0-0] ]
+[0-0] 2025-11-25T17:28:14.000Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:14.000Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/element
+[0-0] 2025-11-25T17:28:14.000Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:14.076Z INFO webdriver: RESULT {
+[0-0]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00ef-ffff-ffff00000020',
+[0-0]   ELEMENT: '00000000-0000-00ef-ffff-ffff00000020'
+[0-0] }
+[0-0] 2025-11-25T17:28:14.078Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-0] 2025-11-25T17:28:14.078Z INFO webdriver: [POST] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb/elements
+[0-0] 2025-11-25T17:28:14.078Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-0] 2025-11-25T17:28:14.140Z INFO webdriver: RESULT [
+[0-0]   {
+[0-0]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00ef-ffff-ffff00000020',
+[0-0]     ELEMENT: '00000000-0000-00ef-ffff-ffff00000020'
+[0-0]   }
+[0-0] ]
+[0-0] 2025-11-25T17:28:14.143Z INFO webdriver: COMMAND deleteSession()
+[0-0] 2025-11-25T17:28:14.144Z INFO webdriver: [DELETE] http://127.0.0.1:4723/session/056854f9-3ba1-4393-a41b-0eb972c814bb
+[0-0] 2025-11-25T17:28:14.378Z INFO webdriver: RESULT null
+[0-0] PASSED in Android on Android - file:///tests/e2e/app.android.spec.js
+2025-11-25T17:28:14.487Z INFO @wdio/cli:launcher: Run onWorkerEnd hook
+2025-11-25T17:28:14.488Z INFO @wdio/cli:launcher: Run onWorkerStart hook
+2025-11-25T17:28:14.488Z INFO @wdio/local-runner: Start worker 0-1 with arg: wdio.android.conf.js
+2025-11-25T17:28:14.512Z INFO @wdio/xvfb:ProcessFactory: xvfb-run not found, falling back to regular fork
+2025-11-25T17:28:14.512Z INFO @wdio/xvfb:ProcessFactory: ProcessFactory: shouldRun=false, isAvailable=false
+2025-11-25T17:28:14.512Z INFO @wdio/xvfb:ProcessFactory: Creating worker process with regular fork
+[0-1] 2025-11-25T17:28:15.495Z INFO @wdio/local-runner: Run worker command: run
+[0-1] RUNNING in Android on Android - file:///tests/e2e/otp.android.spec.js
+[0-1] 2025-11-25T17:28:15.603Z INFO webdriver: Initiate new session using the WebDriver protocol
+[0-1] 2025-11-25T17:28:15.603Z INFO @wdio/utils: Connecting to existing driver at http://127.0.0.1:4723/
+[0-1] 2025-11-25T17:28:15.609Z INFO webdriver: [POST] http://127.0.0.1:4723/session
+[0-1] 2025-11-25T17:28:20.398Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:20.399Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:20.399Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.248Z INFO webdriver: RESULT {
+[0-1]   error: 'no such element',
+[0-1]   message: 'An element could not be located on the page using the given search parameters.',
+[0-1]   stacktrace: 'NoSuchElementError: An element could not be located on the page using the given search parameters.\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrEls (/Users/mevp/TerpelPoC/node_modules/appium-uiautomator2-driver/node_modules/appium-android-driver/lib/commands/find.ts:87:11)\n' +
+[0-1]     '    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrElsWithProcessing (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:60:12)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElement (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:75:12)'
+[0-1] }
+[0-1] 2025-11-25T17:28:21.253Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.253Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.253Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.276Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.353Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.354Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.354Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.374Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.453Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.453Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.453Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.466Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.554Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.554Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.554Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.571Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.653Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.653Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.653Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.668Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.753Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.753Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.753Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.770Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.853Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.853Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.853Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:21.875Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:21.953Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:21.954Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:21.954Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:24.838Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]     ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:24.839Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:24.840Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:24.840Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:24.880Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]   ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1] }
+[0-1] 2025-11-25T17:28:24.881Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:24.881Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:24.881Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:24.951Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]     ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:24.953Z INFO webdriver: COMMAND elementClick("00000000-0000-00fc-ffff-ffff00000020")
+[0-1] 2025-11-25T17:28:24.953Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-00fc-ffff-ffff00000020/click
+[0-1] 2025-11-25T17:28:25.023Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:25.023Z INFO webdriver: COMMAND findElement("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:25.024Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:25.024Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:25.213Z INFO webdriver: RESULT {
+[0-1]   error: 'no such element',
+[0-1]   message: 'An element could not be located on the page using the given search parameters.',
+[0-1]   stacktrace: 'NoSuchElementError: An element could not be located on the page using the given search parameters.\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrEls (/Users/mevp/TerpelPoC/node_modules/appium-uiautomator2-driver/node_modules/appium-android-driver/lib/commands/find.ts:87:11)\n' +
+[0-1]     '    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrElsWithProcessing (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:60:12)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElement (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:75:12)'
+[0-1] }
+[0-1] 2025-11-25T17:28:25.215Z INFO webdriver: COMMAND findElements("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:25.215Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:25.215Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:28.506Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:28.508Z INFO webdriver: COMMAND findElements("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:28.508Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:28.508Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:30.117Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00ff-ffff-ffff0000009f',
+[0-1]     ELEMENT: '00000000-0000-00ff-ffff-ffff0000009f'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:30.120Z INFO webdriver: COMMAND findElement("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:30.120Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:30.120Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:30.145Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00ff-ffff-ffff0000009f',
+[0-1]   ELEMENT: '00000000-0000-00ff-ffff-ffff0000009f'
+[0-1] }
+[0-1] 2025-11-25T17:28:30.147Z INFO webdriver: COMMAND back()
+[0-1] 2025-11-25T17:28:30.147Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/back
+[0-1] 2025-11-25T17:28:30.280Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:30.281Z INFO webdriver: COMMAND findElements("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:30.281Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:30.281Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:31.228Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:31.230Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:31.230Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:31.230Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:31.253Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]   ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1] }
+[0-1] 2025-11-25T17:28:31.255Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:31.255Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:31.255Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:31.329Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]     ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:31.331Z INFO webdriver: COMMAND findElement("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:31.331Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:31.331Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:31.353Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]   ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1] }
+[0-1] 2025-11-25T17:28:31.355Z INFO webdriver: COMMAND findElements("accessibility id", "open-otp")
+[0-1] 2025-11-25T17:28:31.355Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:31.355Z INFO webdriver: DATA { using: 'accessibility id', value: 'open-otp' }
+[0-1] 2025-11-25T17:28:31.427Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-00fc-ffff-ffff00000020',
+[0-1]     ELEMENT: '00000000-0000-00fc-ffff-ffff00000020'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:31.429Z INFO webdriver: COMMAND elementClick("00000000-0000-00fc-ffff-ffff00000020")
+[0-1] 2025-11-25T17:28:31.429Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-00fc-ffff-ffff00000020/click
+[0-1] 2025-11-25T17:28:31.474Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:31.474Z INFO webdriver: COMMAND findElement("accessibility id", "otp-0")
+[0-1] 2025-11-25T17:28:31.474Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:31.474Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-0' }
+[0-1] 2025-11-25T17:28:34.358Z INFO webdriver: RESULT {
+[0-1]   error: 'no such element',
+[0-1]   message: 'An element could not be located on the page using the given search parameters.',
+[0-1]   stacktrace: 'NoSuchElementError: An element could not be located on the page using the given search parameters.\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrEls (/Users/mevp/TerpelPoC/node_modules/appium-uiautomator2-driver/node_modules/appium-android-driver/lib/commands/find.ts:87:11)\n' +
+[0-1]     '    at processTicksAndRejections (node:internal/process/task_queues:95:5)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElOrElsWithProcessing (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:60:12)\n' +
+[0-1]     '    at AndroidUiautomator2Driver.findElement (/Users/mevp/TerpelPoC/node_modules/@appium/base-driver/lib/basedriver/commands/find.ts:75:12)'
+[0-1] }
+[0-1] 2025-11-25T17:28:34.359Z INFO webdriver: COMMAND findElements("accessibility id", "otp-0")
+[0-1] 2025-11-25T17:28:34.360Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:34.360Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-0' }
+[0-1] 2025-11-25T17:28:36.022Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000c6',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000c6'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:36.024Z INFO webdriver: COMMAND findElement("accessibility id", "otp-0")
+[0-1] 2025-11-25T17:28:36.024Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:36.024Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-0' }
+[0-1] 2025-11-25T17:28:36.042Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000c6',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000c6'
+[0-1] }
+[0-1] 2025-11-25T17:28:36.043Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000c6")
+[0-1] 2025-11-25T17:28:36.043Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000c6/clear
+[0-1] 2025-11-25T17:28:36.060Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:36.061Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000c6", "1")
+[0-1] 2025-11-25T17:28:36.061Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000c6/value
+[0-1] 2025-11-25T17:28:36.061Z INFO webdriver: DATA { text: '1' }
+[0-1] 2025-11-25T17:28:36.992Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:36.992Z INFO webdriver: COMMAND findElement("accessibility id", "otp-1")
+[0-1] 2025-11-25T17:28:36.992Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:36.992Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-1' }
+[0-1] 2025-11-25T17:28:38.363Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000c8',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000c8'
+[0-1] }
+[0-1] 2025-11-25T17:28:38.365Z INFO webdriver: COMMAND findElements("accessibility id", "otp-1")
+[0-1] 2025-11-25T17:28:38.365Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:38.365Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-1' }
+[0-1] 2025-11-25T17:28:38.418Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000c8',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000c8'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:38.420Z INFO webdriver: COMMAND findElement("accessibility id", "otp-1")
+[0-1] 2025-11-25T17:28:38.420Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:38.420Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-1' }
+[0-1] 2025-11-25T17:28:38.990Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000c8',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000c8'
+[0-1] }
+[0-1] 2025-11-25T17:28:38.992Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000c8")
+[0-1] 2025-11-25T17:28:38.992Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000c8/clear
+[0-1] 2025-11-25T17:28:39.007Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:39.007Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000c8", "2")
+[0-1] 2025-11-25T17:28:39.007Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000c8/value
+[0-1] 2025-11-25T17:28:39.007Z INFO webdriver: DATA { text: '2' }
+[0-1] 2025-11-25T17:28:39.997Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:39.997Z INFO webdriver: COMMAND findElement("accessibility id", "otp-2")
+[0-1] 2025-11-25T17:28:39.998Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:39.998Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-2' }
+[0-1] 2025-11-25T17:28:41.281Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ca',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000ca'
+[0-1] }
+[0-1] 2025-11-25T17:28:41.283Z INFO webdriver: COMMAND findElements("accessibility id", "otp-2")
+[0-1] 2025-11-25T17:28:41.283Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:41.283Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-2' }
+[0-1] 2025-11-25T17:28:41.326Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ca',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000ca'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:41.327Z INFO webdriver: COMMAND findElement("accessibility id", "otp-2")
+[0-1] 2025-11-25T17:28:41.327Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:41.327Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-2' }
+[0-1] 2025-11-25T17:28:41.351Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ca',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000ca'
+[0-1] }
+[0-1] 2025-11-25T17:28:41.352Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000ca")
+[0-1] 2025-11-25T17:28:41.353Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000ca/clear
+[0-1] 2025-11-25T17:28:41.970Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:41.970Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000ca", "3")
+[0-1] 2025-11-25T17:28:41.970Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000ca/value
+[0-1] 2025-11-25T17:28:41.970Z INFO webdriver: DATA { text: '3' }
+[0-1] 2025-11-25T17:28:43.014Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:43.014Z INFO webdriver: COMMAND findElement("accessibility id", "otp-3")
+[0-1] 2025-11-25T17:28:43.014Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:43.014Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-3' }
+[0-1] 2025-11-25T17:28:44.296Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000cc',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000cc'
+[0-1] }
+[0-1] 2025-11-25T17:28:44.298Z INFO webdriver: COMMAND findElements("accessibility id", "otp-3")
+[0-1] 2025-11-25T17:28:44.298Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:44.298Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-3' }
+[0-1] 2025-11-25T17:28:44.346Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000cc',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000cc'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:44.347Z INFO webdriver: COMMAND findElement("accessibility id", "otp-3")
+[0-1] 2025-11-25T17:28:44.347Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:44.347Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-3' }
+[0-1] 2025-11-25T17:28:44.369Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000cc',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000cc'
+[0-1] }
+[0-1] 2025-11-25T17:28:44.371Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000cc")
+[0-1] 2025-11-25T17:28:44.371Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000cc/clear
+[0-1] 2025-11-25T17:28:44.972Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:44.972Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000cc", "4")
+[0-1] 2025-11-25T17:28:44.972Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000cc/value
+[0-1] 2025-11-25T17:28:44.972Z INFO webdriver: DATA { text: '4' }
+[0-1] 2025-11-25T17:28:46.011Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:46.011Z INFO webdriver: COMMAND findElement("accessibility id", "otp-4")
+[0-1] 2025-11-25T17:28:46.011Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:46.011Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-4' }
+[0-1] 2025-11-25T17:28:47.270Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ce',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000ce'
+[0-1] }
+[0-1] 2025-11-25T17:28:47.272Z INFO webdriver: COMMAND findElements("accessibility id", "otp-4")
+[0-1] 2025-11-25T17:28:47.272Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:47.272Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-4' }
+[0-1] 2025-11-25T17:28:47.308Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ce',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000ce'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:47.310Z INFO webdriver: COMMAND findElement("accessibility id", "otp-4")
+[0-1] 2025-11-25T17:28:47.310Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:47.310Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-4' }
+[0-1] 2025-11-25T17:28:47.331Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000ce',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000ce'
+[0-1] }
+[0-1] 2025-11-25T17:28:47.332Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000ce")
+[0-1] 2025-11-25T17:28:47.333Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000ce/clear
+[0-1] 2025-11-25T17:28:47.346Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:47.346Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000ce", "5")
+[0-1] 2025-11-25T17:28:47.346Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000ce/value
+[0-1] 2025-11-25T17:28:47.346Z INFO webdriver: DATA { text: '5' }
+[0-1] 2025-11-25T17:28:47.991Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:47.991Z INFO webdriver: COMMAND findElement("accessibility id", "otp-5")
+[0-1] 2025-11-25T17:28:47.991Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:47.991Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-5' }
+[0-1] 2025-11-25T17:28:49.287Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000d0',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000d0'
+[0-1] }
+[0-1] 2025-11-25T17:28:49.289Z INFO webdriver: COMMAND findElements("accessibility id", "otp-5")
+[0-1] 2025-11-25T17:28:49.290Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:49.290Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-5' }
+[0-1] 2025-11-25T17:28:49.329Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000d0',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000d0'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:49.331Z INFO webdriver: COMMAND findElement("accessibility id", "otp-5")
+[0-1] 2025-11-25T17:28:49.331Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:49.331Z INFO webdriver: DATA { using: 'accessibility id', value: 'otp-5' }
+[0-1] 2025-11-25T17:28:49.352Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000d0',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000d0'
+[0-1] }
+[0-1] 2025-11-25T17:28:49.353Z INFO webdriver: COMMAND elementClear("00000000-0000-0100-ffff-ffff000000d0")
+[0-1] 2025-11-25T17:28:49.353Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000d0/clear
+[0-1] 2025-11-25T17:28:49.371Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:49.371Z INFO webdriver: COMMAND elementSendKeys("00000000-0000-0100-ffff-ffff000000d0", "6")
+[0-1] 2025-11-25T17:28:49.371Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000d0/value
+[0-1] 2025-11-25T17:28:49.371Z INFO webdriver: DATA { text: '6' }
+[0-1] 2025-11-25T17:28:49.999Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:49.999Z INFO webdriver: COMMAND findElement("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:49.999Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element
+[0-1] 2025-11-25T17:28:49.999Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:50.992Z INFO webdriver: RESULT {
+[0-1]   'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000d4',
+[0-1]   ELEMENT: '00000000-0000-0100-ffff-ffff000000d4'
+[0-1] }
+[0-1] 2025-11-25T17:28:50.993Z INFO webdriver: COMMAND isElementEnabled("00000000-0000-0100-ffff-ffff000000d4")
+[0-1] 2025-11-25T17:28:50.994Z INFO webdriver: [GET] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000d4/enabled
+[0-1] 2025-11-25T17:28:51.013Z INFO webdriver: RESULT true
+[0-1] 2025-11-25T17:28:51.014Z INFO webdriver: COMMAND elementClick("00000000-0000-0100-ffff-ffff000000d4")
+[0-1] 2025-11-25T17:28:51.014Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/element/00000000-0000-0100-ffff-ffff000000d4/click
+[0-1] 2025-11-25T17:28:51.075Z INFO webdriver: RESULT null
+[0-1] 2025-11-25T17:28:51.075Z INFO webdriver: COMMAND findElements("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:51.075Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:51.075Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:51.187Z INFO webdriver: RESULT [
+[0-1]   {
+[0-1]     'element-6066-11e4-a52e-4f735466cecf': '00000000-0000-0100-ffff-ffff000000d4',
+[0-1]     ELEMENT: '00000000-0000-0100-ffff-ffff000000d4'
+[0-1]   }
+[0-1] ]
+[0-1] 2025-11-25T17:28:51.190Z INFO webdriver: COMMAND findElements("accessibility id", "verify-otp")
+[0-1] 2025-11-25T17:28:51.190Z INFO webdriver: [POST] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6/elements
+[0-1] 2025-11-25T17:28:51.190Z INFO webdriver: DATA { using: 'accessibility id', value: 'verify-otp' }
+[0-1] 2025-11-25T17:28:52.712Z INFO webdriver: RESULT []
+[0-1] 2025-11-25T17:28:52.714Z INFO webdriver: COMMAND deleteSession()
+[0-1] 2025-11-25T17:28:52.714Z INFO webdriver: [DELETE] http://127.0.0.1:4723/session/d3b59668-68a9-471c-84af-30c28e4ce3b6
+[0-1] 2025-11-25T17:28:52.911Z INFO webdriver: RESULT null
+[0-1] PASSED in Android on Android - file:///tests/e2e/otp.android.spec.js
+2025-11-25T17:28:53.021Z INFO @wdio/cli:launcher: Run onWorkerEnd hook
+
+ "spec" Reporter:
+------------------------------------------------------------------
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0] Running: ./android/app/build/outputs/apk/debug/app-debug.apk on Android
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0] Session ID: 056854f9-3ba1-4393-a41b-0eb972c814bb
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0]
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0] » tests/e2e/app.android.spec.js
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0] Android app
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0]    ✓ launches and shows open-otp button
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0]
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-0] 1 passing (4.7s)
+------------------------------------------------------------------
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1] Running: ./android/app/build/outputs/apk/debug/app-debug.apk on Android
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1] Session ID: d3b59668-68a9-471c-84af-30c28e4ce3b6
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1]
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1] » tests/e2e/otp.android.spec.js
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1] OTP Modal Android
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1]    ✓ abre y cierra el modal OTP
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1]    ✓ ingresa código y verifica cierre
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1]
+[./android/app/build/outputs/apk/debug/app-debug.apk Android #0-1] 2 passing (32.5s)
+
+
+Spec Files:	 2 passed, 2 total (100% completed) in 00:00:49  
+
+2025-11-25T17:28:53.022Z INFO @wdio/local-runner: Shutting down spawned worker
+2025-11-25T17:28:53.273Z INFO @wdio/local-runner: Waiting for 0 to shut down gracefully
+2025-11-25T17:28:53.273Z INFO @wdio/local-runner: shutting down
+2025-11-25T17:28:53.274Z INFO @wdio/cli:launcher: Run onComplete hook

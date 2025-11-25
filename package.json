@@ -11,6 +11,7 @@
     "appium": "appium",
     "build:android:debug": "cd android && ./gradlew assembleDebug",
     "e2e:android": "wdio wdio.android.conf.js",
+    "e2e:android:report": "wdio wdio.android.conf.js | tee reports/wdio-android.log && node scripts/generate-e2e-report-android.js",
     "e2e:ios": "wdio wdio.ios.conf.js",
     "build:ios:debug": "xcodebuild -workspace ios/TerpelPoC.xcworkspace -scheme TerpelPoC -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
   },
@@ -46,8 +47,8 @@
     "@wdio/local-runner": "^9.20.1",
     "@wdio/mocha-framework": "^9.20.1",
     "@wdio/spec-reporter": "^9.20.0",
-    "appium": "^3.1.1",
-    "appium-uiautomator2-driver": "^6.3.0",
+    "appium": "^2.11.0",
+    "appium-uiautomator2-driver": "^2.31.4",
     "appium-xcuitest-driver": "^10.8.0",
     "babel-jest": "^29.6.3",
     "eslint": "^8.19.0",
@@ -55,9 +56,22 @@
     "prettier": "2.8.8",
     "react-test-renderer": "18.3.1",
     "typescript": "5.0.4",
+    "uuid": "8.3.2",
     "webdriverio": "^9.20.1"
   },
   "engines": {
     "node": ">=18"
+  },
+  "overrides": {
+    "uuid": "8.3.2",
+    "@appium/support": {
+      "uuid": "8.3.2"
+    },
+    "appium-uiautomator2-driver": {
+      "uuid": "8.3.2",
+      "@appium/support": {
+        "uuid": "8.3.2"
+      }
+    }
   }
 }
