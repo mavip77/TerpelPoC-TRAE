@@ -1,0 +1,1 @@
+Implementar la logica para extraer los codigos OTP de los mensajes SMS detectados. Esto incluye analizar el contenido del mensaje, identificar el formato del codigo OTP, y extraerlo de manera precisa. Asegurarse de que el codigo extraido sea el correcto y que el proceso sea robusto frente a diferentes formatos de mensajes SMS.

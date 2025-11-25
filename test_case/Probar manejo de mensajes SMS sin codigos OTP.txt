@@ -1,0 +1,4 @@
+Scenario: Manejo de mensajes SMS sin codigos OTP
+Given que la API SMS Retriever esta configurada correctamente
+When un mensaje SMS sin un codigo OTP es recibido
+Then la aplicacion no debe procesar ni extraer ningun dato
