@@ -1,0 +1,4 @@
+Scenario: Validacion de seguridad y privacidad
+Given que la API SMS Retriever esta integrada en la aplicacion
+When se procesan mensajes SMS
+Then la aplicacion debe garantizar que los datos sean manejados de acuerdo con los requisitos de seguridad y privacidad

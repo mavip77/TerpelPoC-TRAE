@@ -1,0 +1,4 @@
+Scenario: Manejo de multiples mensajes SMS
+Given que la API SMS Retriever esta configurada correctamente
+When multiples mensajes SMS con codigos OTP son recibidos simultaneamente
+Then la aplicacion debe procesar cada mensaje correctamente y extraer los codigos OTP

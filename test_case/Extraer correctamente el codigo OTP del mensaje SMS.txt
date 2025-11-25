@@ -1,0 +1,4 @@
+Scenario: Extraccion del codigo OTP
+Given que un mensaje SMS con un codigo OTP es detectado
+When el mensaje es procesado por la aplicacion
+Then el codigo OTP debe ser extraido correctamente

@@ -1,0 +1,4 @@
+Scenario: Validacion de longitud del codigo OTP
+Given que un mensaje SMS con un codigo OTP es detectado
+When el codigo OTP tiene una longitud fuera de los limites esperados
+Then la aplicacion debe manejar el error adecuadamente

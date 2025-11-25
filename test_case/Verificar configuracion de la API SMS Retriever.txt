@@ -1,0 +1,4 @@
+Scenario: Configurar la API SMS Retriever en el proyecto Android
+Given que la aplicacion Android esta configurada correctamente
+When se integra la API SMS Retriever en el proyecto
+Then la API debe estar habilitada y lista para detectar mensajes SMS

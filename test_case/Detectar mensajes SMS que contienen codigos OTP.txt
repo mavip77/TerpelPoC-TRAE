@@ -1,0 +1,4 @@
+Scenario: Deteccion de mensajes SMS con codigos OTP
+Given que la API SMS Retriever esta configurada correctamente
+When un mensaje SMS que contiene un codigo OTP es recibido
+Then la aplicacion debe detectar el mensaje automaticamente
