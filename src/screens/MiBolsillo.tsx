@@ -623,6 +623,41 @@ export default function MiBolsillo({navigation}: Props) {
                   : ''}
               </Text>
             </View>
+            <TouchableOpacity
+              style={styles.primaryBtn}
+              onPress={() => {
+                const tx = selectedTx;
+                if (!tx) return;
+                const ref = '70058e…';
+                const station = 'Estación Principal';
+                const status: 'Aceptado' | 'Rechazado' = 'Aceptado';
+                const pushDelivered = false;
+                const hasData = false;
+                const phone = '+57 300 000 0000';
+                import('../services/sms').then(({sendSmsPayment}) => {
+                  sendSmsPayment(
+                    phone,
+                    {
+                      amount: Math.abs(tx.amount),
+                      station,
+                      ref,
+                      status,
+                    },
+                    hasData,
+                    pushDelivered,
+                  ).then(res => {
+                    Alert.alert(
+                      res.sent ? 'SMS enviado' : 'SMS no enviado',
+                      res.sent
+                        ? String(res.content)
+                        : res.reason || 'Condiciones no cumplidas',
+                    );
+                  });
+                });
+              }}
+            >
+              <Text style={styles.primaryBtnText}>Enviar SMS</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.supportBtn}>
               <MaterialCommunityIcons
                 name="whatsapp"
