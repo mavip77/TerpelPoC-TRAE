@@ -97,7 +97,7 @@ export default function OtpModal({
     if (c && c.length === 6) {
       autoSubmitRef.current = setTimeout(() => {
         handleVerify();
-      }, 500);
+      }, 300);
     }
   };
 
@@ -170,7 +170,10 @@ export default function OtpModal({
       onSwipeComplete={onClose}
       useNativeDriver
       hideModalContentWhileAnimating>
-      <View style={[styles.sheet, {height}]}>
+      <View
+        style={[styles.sheet, {height}]}
+        accessibilityLabel="otp-modal"
+        testID="otp-modal">
         <View style={styles.header}>
           <View style={styles.handle} />
           <TouchableOpacity

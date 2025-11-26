@@ -1,4 +1,6 @@
 const caps = require('./capabilities.json');
+const fs = require('fs');
+const path = require('path');
 
 exports.config = {
   runner: 'local',
@@ -18,12 +20,47 @@ exports.config = {
   ],
   services: [],
   framework: 'mocha',
-  reporters: ['spec'],
+  reporters: [
+    'spec',
+    ['allure', {outputDir: './reports/allure/android', disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: false}],
+  ],
   mochaOpts: {ui: 'bdd', timeout: 600000},
+  beforeTest: async function () {
+    try {
+      await driver.startRecordingScreen({
+        videoSize: '720x1280',
+        timeLimit: '180s',
+        bitRate: 2000000,
+      });
+    } catch {}
+  },
   afterTest: async function (test, context, {error, result, duration, passed}) {
     if (!passed) {
       const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}.png`;
-      await browser.saveScreenshot(`./reports/screenshots/android/${name}`);
+      const file = `./reports/screenshots/android/${name}`;
+      await browser.saveScreenshot(file);
+      try {
+        const allure = require('@wdio/allure-reporter').default;
+        const buf = fs.readFileSync(file);
+        allure.addAttachment('screenshot', buf, 'image/png');
+      } catch {}
     }
+    try {
+      const b64 = await driver.stopRecordingScreen();
+      if (b64) {
+        const dir = path.join('reports', 'videos', 'android');
+        fs.mkdirSync(dir, {recursive: true});
+        const file = path.join(
+          dir,
+          `${Date.now()}_${test.title.replace(/\s+/g, '_')}.mp4`,
+        );
+        fs.writeFileSync(file, Buffer.from(b64, 'base64'));
+        try {
+          const allure = require('@wdio/allure-reporter').default;
+          const buf = fs.readFileSync(file);
+          allure.addAttachment('video', buf, 'video/mp4');
+        } catch {}
+      }
+    } catch {}
   },
 };
