@@ -5,18 +5,129 @@ import {COLORS} from '../constants/HomeConstants';
 
 type Bucket = {campaign: string; amount: number; vence: string};
 
+export const MIN_BLOCKCHAIN_AMOUNT = 20000;
+
+export function isAnyBucketValid(buckets: Bucket[], now: Date): boolean {
+  return buckets.some(b => new Date(b.vence).getTime() >= now.getTime());
+}
+
+export function isBucketValid(b: Bucket, now: Date): boolean {
+  return new Date(b.vence).getTime() >= now.getTime();
+}
+
+export function computeAvailableCashback(buckets: Bucket[], now: Date): number {
+  return buckets.reduce(
+    (sum, b) => sum + (isBucketValid(b, now) ? Math.max(0, b.amount) : 0),
+    0,
+  );
+}
+
+export function computeTotalCashback(buckets: Bucket[]): number {
+  return buckets.reduce((sum, b) => sum + Math.max(0, b.amount), 0);
+}
+
+export function deductFromBuckets(buckets: Bucket[], amount: number): Bucket[] {
+  if (amount <= 0) return buckets.slice();
+  const now = new Date();
+  const sorted = buckets
+    .slice()
+    .filter(b => isBucketValid(b, now))
+    .sort((a, b) => new Date(a.vence).getTime() - new Date(b.vence).getTime());
+  let remaining = amount;
+  for (const b of sorted) {
+    if (remaining <= 0) break;
+    const take = Math.min(b.amount, remaining);
+    b.amount -= take;
+    remaining -= take;
+  }
+  const byKey = new Map<string, Bucket>();
+  for (const s of sorted) byKey.set(`${s.campaign}-${s.vence}`, s);
+  return buckets.map(b => byKey.get(`${b.campaign}-${b.vence}`) || b);
+}
+
+export type RedemptionAudit = {id: string; tipo: string; monto: number; fecha: string};
+export type RedemptionResult = {
+  walletBalance: number;
+  buckets: Bucket[];
+  pointsBalance: number;
+  outcome?: 'wallet' | 'points';
+  error?: string;
+  audit: RedemptionAudit | null;
+};
+
+export function redeemCashback(
+  amount: number,
+  redemptionId: string,
+  walletBalance: number,
+  buckets: Bucket[],
+  pointsBalance: number,
+  processedIds: Set<string>,
+  now: Date,
+): RedemptionResult {
+  if (!isAnyBucketValid(buckets, now)) {
+    return {walletBalance, buckets, pointsBalance, error: 'Vencido', audit: null};
+  }
+  const total = computeAvailableCashback(buckets, now);
+  if (amount <= 0 || amount > total) {
+    return {walletBalance, buckets, pointsBalance, error: 'Monto inválido', audit: null};
+  }
+  if (processedIds.has(redemptionId)) {
+    return {walletBalance, buckets, pointsBalance, error: 'Idempotente', audit: null};
+  }
+  if (amount < MIN_BLOCKCHAIN_AMOUNT) {
+    const nb = deductFromBuckets(buckets, amount);
+    const np = pointsBalance + amount;
+    return {
+      walletBalance,
+      buckets: nb,
+      pointsBalance: np,
+      outcome: 'points',
+      audit: {id: redemptionId, tipo: 'cashback->points', monto: amount, fecha: now.toISOString()},
+    };
+  }
+  const nw = walletBalance + amount;
+  const nb = deductFromBuckets(buckets, amount);
+  return {
+    walletBalance: nw,
+    buckets: nb,
+    pointsBalance,
+    outcome: 'wallet',
+    audit: {id: redemptionId, tipo: 'cashback->wallet', monto: amount, fecha: now.toISOString()},
+  };
+}
+
+export function redeemPoints(
+  pointsBalance: number,
+  walletBalance: number,
+  redemptionId: string,
+  now: Date,
+): RedemptionResult {
+  if (pointsBalance <= 0) {
+    return {walletBalance, buckets: [], pointsBalance, error: 'Sin puntos', audit: null};
+  }
+  const nw = walletBalance + pointsBalance;
+  return {
+    walletBalance: nw,
+    buckets: [],
+    pointsBalance: 0,
+    outcome: 'wallet',
+    audit: {id: redemptionId, tipo: 'points->wallet', monto: pointsBalance, fecha: now.toISOString()},
+  };
+}
+
 export default function CashbackScreen(): React.JSX.Element {
-  const [walletBalance] = useState<number>(8100);
+  const [walletBalance, setWalletBalance] = useState<number>(8100);
   const [buckets, setBuckets] = useState<Bucket[]>([
     {campaign: 'Bienvenida', amount: 10000, vence: '2025-12-31'},
     {campaign: 'Global', amount: 8500, vence: '2026-03-31'},
   ]);
   const [amount, setAmount] = useState<string>('');
+  const [pointsBalance, setPointsBalance] = useState<number>(0);
+  const [message, setMessage] = useState<string>('');
+  const [audit, setAudit] = useState<RedemptionAudit[]>([]);
+  const processedIds = useMemo(() => new Set<string>(), []);
 
-  const totalCashback = useMemo(
-    () => buckets.reduce((sum, b) => sum + Math.max(0, b.amount), 0),
-    [buckets],
-  );
+  const totalCashback = useMemo(() => computeAvailableCashback(buckets, new Date()), [buckets]);
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: COLORS.grayBg}} contentContainerStyle={{paddingBottom: 24}}>
@@ -74,11 +185,80 @@ export default function CashbackScreen(): React.JSX.Element {
             paddingVertical: 10,
             alignSelf: 'flex-start',
             marginTop: 10,
-          }}>
+          }}
+          onPress={() => {
+            const amt = Number(amount.replace(/[^0-9]/g, ''));
+            const id = `cb-${Date.now()}`;
+            const now = new Date();
+            const res = redeemCashback(
+              amt,
+              id,
+              walletBalance,
+              buckets,
+              pointsBalance,
+              processedIds,
+              now,
+            );
+            if (res.error) {
+              setMessage(res.error);
+              return;
+            }
+            setBuckets(res.buckets);
+            setPointsBalance(res.pointsBalance);
+            if (res.outcome === 'wallet') setWalletBalance(res.walletBalance);
+            if (res.audit) {
+              setAudit(prev => [res.audit!, ...prev]);
+              processedIds.add(res.audit.id);
+            }
+            setMessage(res.outcome === 'wallet' ? 'Redimido al bolsillo' : 'Convertido a puntos');
+          }}
+        >
           <Text style={{color: COLORS.white, fontWeight: '700'}}>Redimir ahora</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            backgroundColor: COLORS.mid,
+            borderRadius: 8,
+            paddingHorizontal: 12,
+            paddingVertical: 10,
+            alignSelf: 'flex-start',
+            marginTop: 10,
+          }}
+          onPress={() => {
+            const id = `pt-${Date.now()}`;
+            const now = new Date();
+            const res = redeemPoints(pointsBalance, walletBalance, id, now);
+            if (res.error) {
+              setMessage(res.error);
+              return;
+            }
+            setPointsBalance(res.pointsBalance);
+            setWalletBalance(res.walletBalance);
+            if (res.audit) {
+              setAudit(prev => [res.audit!, ...prev]);
+              processedIds.add(res.audit.id);
+            }
+            setMessage('Puntos redimidos al bolsillo');
+          }}
+        >
+          <Text style={{color: COLORS.white, fontWeight: '700'}}>Redimir puntos</Text>
+        </TouchableOpacity>
+        {!!message && (
+          <View style={{marginTop: 8}}>
+            <Text style={{color: COLORS.dark}}>{message}</Text>
+          </View>
+        )}
+      </View>
+
+      <View style={{backgroundColor: COLORS.white, margin: 12, borderRadius: 12, padding: 12}}>
+        <Text style={{color: COLORS.dark, fontWeight: '700'}}>Auditoría</Text>
+        {audit.map(a => (
+          <View key={a.id} style={{paddingVertical: 6, borderBottomWidth: 0.5, borderColor: '#E5E7EB'}}>
+            <Text style={{color: COLORS.dark, fontWeight: '600'}}>{a.tipo}</Text>
+            <Text style={{color: COLORS.mid}}>ID: {a.id} • {a.fecha} • $ {a.monto.toLocaleString()}</Text>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
 }
-
