@@ -5,6 +5,8 @@ import CashbackScreen, {
   computeAvailableCashback,
   deductFromBuckets,
   redeemCashback,
+  expireBuckets,
+  getPreExpiryAlerts,
 } from '../src/screens/CashbackScreen';
 
 describe('CashbackScreen', () => {
@@ -64,5 +66,24 @@ describe('CashbackScreen', () => {
       new Date('2029-01-01'),
     );
     expect(res.error).toBe('Idempotente');
+  });
+  it('expira buckets vencidos y genera auditoría', () => {
+    const buckets = [
+      {campaign: 'A', amount: 1000, vence: '2020-01-01'},
+      {campaign: 'B', amount: 2000, vence: '2030-01-01'},
+    ];
+    const {buckets: out, expiredAudits} = expireBuckets(buckets, new Date('2029-01-01'));
+    expect(out[0].amount).toBe(0);
+    expect(expiredAudits.length).toBe(1);
+    expect(expiredAudits[0].tipo).toBe('expired');
+  });
+  it('genera alertas previas a vencimiento', () => {
+    const buckets = [
+      {campaign: 'A', amount: 1000, vence: '2029-01-05'},
+      {campaign: 'B', amount: 2000, vence: '2030-01-01'},
+    ];
+    const alerts = getPreExpiryAlerts(buckets, new Date('2029-01-01'), 7);
+    expect(alerts.length).toBeGreaterThan(0);
+    expect(alerts[0].campaign).toBe('A');
   });
 });

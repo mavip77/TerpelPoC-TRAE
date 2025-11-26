@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../constants/HomeConstants';
@@ -115,6 +115,44 @@ export function redeemPoints(
   };
 }
 
+export function getPreExpiryAlerts(
+  buckets: Bucket[],
+  now: Date,
+  daysWindow: number = 7,
+): {campaign: string; vence: string; daysLeft: number}[] {
+  return buckets
+    .filter(b => isBucketValid(b, now))
+    .map(b => {
+      const end = new Date(b.vence).getTime();
+      const dl = Math.ceil((end - now.getTime()) / (1000 * 60 * 60 * 24));
+      return {campaign: b.campaign, vence: b.vence, daysLeft: dl};
+    })
+    .filter(x => x.daysLeft >= 0 && x.daysLeft <= daysWindow)
+    .sort((a, b) => a.daysLeft - b.daysLeft);
+}
+
+export function expireBuckets(
+  buckets: Bucket[],
+  now: Date,
+): {buckets: Bucket[]; expiredAudits: RedemptionAudit[]} {
+  const out: Bucket[] = buckets.map(b => ({...b}));
+  const expiredAudits: RedemptionAudit[] = [];
+  for (const b of out) {
+    const expired = !isBucketValid(b, now);
+    if (expired && b.amount > 0) {
+      const amt = b.amount;
+      b.amount = 0;
+      expiredAudits.push({
+        id: `exp-${b.campaign}-${now.getTime()}`,
+        tipo: 'expired',
+        monto: amt,
+        fecha: now.toISOString(),
+      });
+    }
+  }
+  return {buckets: out, expiredAudits};
+}
+
 export default function CashbackScreen(): React.JSX.Element {
   const [walletBalance, setWalletBalance] = useState<number>(8100);
   const [buckets, setBuckets] = useState<Bucket[]>([
@@ -128,6 +166,21 @@ export default function CashbackScreen(): React.JSX.Element {
   const processedIds = useMemo(() => new Set<string>(), []);
 
   const totalCashback = useMemo(() => computeAvailableCashback(buckets, new Date()), [buckets]);
+
+  const alerts = useMemo(() => getPreExpiryAlerts(buckets, new Date(), 14), [buckets]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const {buckets: nb, expiredAudits} = expireBuckets(buckets, now);
+      if (expiredAudits.length > 0) {
+        setBuckets(nb);
+        setAudit(prev => [...expiredAudits, ...prev]);
+        setMessage('Se descontó cashback vencido');
+      }
+    }, 15000);
+    return () => clearInterval(interval);
+  }, [buckets]);
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: COLORS.grayBg}} contentContainerStyle={{paddingBottom: 24}}>
@@ -258,6 +311,20 @@ export default function CashbackScreen(): React.JSX.Element {
             <Text style={{color: COLORS.mid}}>ID: {a.id} • {a.fecha} • $ {a.monto.toLocaleString()}</Text>
           </View>
         ))}
+      </View>
+
+      <View style={{backgroundColor: COLORS.white, marginHorizontal: 12, borderRadius: 12, padding: 12}}>
+        <Text style={{color: COLORS.dark, fontWeight: '700'}}>Alertas de vencimiento</Text>
+        {alerts.length === 0 ? (
+          <Text style={{color: COLORS.mid, marginTop: 6}}>Sin alertas próximas</Text>
+        ) : (
+          alerts.map(al => (
+            <View key={`${al.campaign}-${al.vence}`} style={{paddingVertical: 6, borderBottomWidth: 0.5, borderColor: '#E5E7EB'}}>
+              <Text style={{color: COLORS.dark, fontWeight: '600'}}>{al.campaign}</Text>
+              <Text style={{color: COLORS.mid}}>Vence en {al.daysLeft} días • {al.vence}</Text>
+            </View>
+          ))
+        )}
       </View>
     </ScrollView>
   );
