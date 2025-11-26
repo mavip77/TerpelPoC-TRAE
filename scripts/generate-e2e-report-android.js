@@ -52,13 +52,21 @@ function writeTechnicalMD(agg, dir) {
   lines.push(`  - Fallidas: ${agg.failed}`);
   lines.push('');
   lines.push('## Casos');
-  lines.push('| Spec | Caso | Estado | Duración |');
-  lines.push('|---|---|---|---|');
+  lines.push('| Spec | Caso | Estado | Duración | Video |');
+  lines.push('|---|---|---|---|---|');
   agg.cases.forEach(c => {
+    const vidsDir = path.join('reports', 'videos', 'android');
+    let videoCell = 'N/D';
+    if (fs.existsSync(vidsDir)) {
+      const files = fs.readdirSync(vidsDir);
+      const namePart = (c.title || '').replace(/\s+/g, '_');
+      const match = files.find(f => f.includes(namePart));
+      if (match) videoCell = `[${match}](../videos/android/${match})`;
+    }
     lines.push(
       `| ${c.spec || 'N/D'} | ${c.title} | ${
         c.state === 'passed' ? '✅' : '❌'
-      } | ${formatDuration(c.duration)} |`,
+      } | ${formatDuration(c.duration)} | ${videoCell} |`,
     );
   });
   const out = path.join('reports', `e2e_android_technical_${Date.now()}.md`);
