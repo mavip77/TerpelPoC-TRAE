@@ -18,7 +18,7 @@ exports.config = {
       'appium:udid': process.env.ANDROID_UDID || caps.android['appium:udid'],
     }),
   ],
-  services: [],
+  services: [['appium', {args: {allowCors: true}}]],
   framework: 'mocha',
   reporters: [
     'spec',
@@ -35,16 +35,17 @@ exports.config = {
     } catch {}
   },
   afterTest: async function (test, context, {error, result, duration, passed}) {
-    if (!passed) {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}.png`;
+    try {
+      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${passed ? 'passed' : 'failed'}.png`;
       const file = `./reports/screenshots/android/${name}`;
+      fs.mkdirSync('./reports/screenshots/android', {recursive: true});
       await browser.saveScreenshot(file);
       try {
         const allure = require('@wdio/allure-reporter').default;
         const buf = fs.readFileSync(file);
         allure.addAttachment('screenshot', buf, 'image/png');
       } catch {}
-    }
+    } catch {}
     try {
       const b64 = await driver.stopRecordingScreen();
       if (b64) {

@@ -37,7 +37,18 @@ exports.config = {
       });
     } catch {}
   },
-  afterTest: async function (test) {
+  afterTest: async function (test, context, {passed}) {
+    try {
+      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${passed ? 'passed' : 'failed'}.png`;
+      const file = `./reports/screenshots/ios/${name}`;
+      fs.mkdirSync('./reports/screenshots/ios', {recursive: true});
+      await browser.saveScreenshot(file);
+      try {
+        const allure = require('@wdio/allure-reporter').default;
+        const buf = fs.readFileSync(file);
+        allure.addAttachment('screenshot', buf, 'image/png');
+      } catch {}
+    } catch {}
     try {
       const b64 = await driver.stopRecordingScreen();
       if (b64) {

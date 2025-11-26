@@ -13,6 +13,7 @@
     "e2e:android": "wdio wdio.android.conf.js",
     "e2e:android:report": "wdio wdio.android.conf.js | tee reports/wdio-android.log && node scripts/generate-e2e-report-android.js",
     "e2e:ios": "wdio wdio.ios.conf.js",
+    "e2e:ios:report": "wdio wdio.ios.conf.js | tee reports/wdio-ios.log && node scripts/generate-e2e-report-ios.js",
     "build:ios:debug": "xcodebuild -workspace ios/TerpelPoC.xcworkspace -scheme TerpelPoC -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build"
   },
   "dependencies": {
