@@ -15,6 +15,7 @@ import {
   View,
 } from 'react-native';
 import OtpModal from './src/components/OtpModal';
+import CashbackScreen from './src/screens/CashbackScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MiBolsillo from './src/screens/MiBolsillo';
 import {NavigationContainer} from '@react-navigation/native';
@@ -78,6 +79,7 @@ function App(): React.JSX.Element {
                 )}
               </Stack.Screen>
               <Stack.Screen name="MiBolsillo" component={MiBolsillo as any} />
+              <Stack.Screen name="Cashback" component={CashbackScreen as any} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
