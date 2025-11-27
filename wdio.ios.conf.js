@@ -1,6 +1,8 @@
 const caps = require('./capabilities.json');
 const fs = require('fs');
 const path = require('path');
+const {driver, browser} = require('@wdio/globals');
+const {Buffer} = require('buffer');
 
 exports.config = {
   runner: 'local',
@@ -39,7 +41,9 @@ exports.config = {
   },
   afterTest: async function (test, context, {passed}) {
     try {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${passed ? 'passed' : 'failed'}.png`;
+      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${
+        passed ? 'passed' : 'failed'
+      }.png`;
       const file = `./reports/screenshots/ios/${name}`;
       fs.mkdirSync('./reports/screenshots/ios', {recursive: true});
       await browser.saveScreenshot(file);

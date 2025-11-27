@@ -1,6 +1,8 @@
 const caps = require('./capabilities.json');
 const fs = require('fs');
 const path = require('path');
+const {driver, browser} = require('@wdio/globals');
+const {Buffer} = require('buffer');
 
 exports.config = {
   runner: 'local',
@@ -22,7 +24,14 @@ exports.config = {
   framework: 'mocha',
   reporters: [
     'spec',
-    ['allure', {outputDir: './reports/allure/android', disableWebdriverStepsReporting: true, disableWebdriverScreenshotsReporting: false}],
+    [
+      'allure',
+      {
+        outputDir: './reports/allure/android',
+        disableWebdriverStepsReporting: true,
+        disableWebdriverScreenshotsReporting: false,
+      },
+    ],
   ],
   mochaOpts: {ui: 'bdd', timeout: 600000},
   beforeTest: async function () {
@@ -36,7 +45,9 @@ exports.config = {
   },
   afterTest: async function (test, context, {error, result, duration, passed}) {
     try {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${passed ? 'passed' : 'failed'}.png`;
+      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${
+        passed ? 'passed' : 'failed'
+      }.png`;
       const file = `./reports/screenshots/android/${name}`;
       fs.mkdirSync('./reports/screenshots/android', {recursive: true});
       await browser.saveScreenshot(file);

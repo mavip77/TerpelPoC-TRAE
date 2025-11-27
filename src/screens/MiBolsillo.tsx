@@ -49,6 +49,9 @@ export default function MiBolsillo({navigation}: Props) {
   const [favConfirmOpen, setFavConfirmOpen] = useState<boolean>(false);
   const [selectedFav, setSelectedFav] = useState<Favorito | null>(null);
   const [favAmount, setFavAmount] = useState<string>('');
+  const [favQuery, setFavQuery] = useState<string>('');
+  const [favEditOpen, setFavEditOpen] = useState<boolean>(false);
+  const [editName, setEditName] = useState<string>('');
 
   const montoNum = useMemo(() => {
     const n = Number(String(monto).replace(/[^0-9]/g, ''));
@@ -105,41 +108,15 @@ export default function MiBolsillo({navigation}: Props) {
         {
           text: 'Agregar',
           onPress: async () => {
-            try {
-              const list = await loadFavoritos();
-              const exists = list.some(
-                f =>
-                  f.docType === snapshot.docType &&
-                  f.docNumber === snapshot.docNumber,
-              );
-              const next = exists
-                ? list.map(f =>
-                    f.docType === snapshot.docType &&
-                    f.docNumber === snapshot.docNumber
-                      ? {
-                          name: snapshot.name || f.name,
-                          docType: f.docType,
-                          docNumber: f.docNumber,
-                        }
-                      : f,
-                  )
-                : [
-                    ...list,
-                    {
-                      name: snapshot.name || 'Sin nombre',
-                      docType: snapshot.docType,
-                      docNumber: snapshot.docNumber,
-                    },
-                  ];
-              await saveFavoritos(next);
-              setFavoritos(next);
-              Alert.alert(
-                'Favorito guardado',
-                'El destinatario fue agregado a tus favoritos.',
-              );
-            } catch (e) {
-              Alert.alert('Error', 'No se pudo guardar el favorito.');
-            }
+            await addFavorite({
+              name: snapshot.name || 'Sin nombre',
+              docType: snapshot.docType,
+              docNumber: snapshot.docNumber,
+            });
+            Alert.alert(
+              'Favorito guardado',
+              'El destinatario fue agregado a tus favoritos.',
+            );
           },
         },
       ],
@@ -204,6 +181,46 @@ export default function MiBolsillo({navigation}: Props) {
     await Keychain.setGenericPassword('favorites', json, {
       service: 'favorites',
     });
+  };
+
+  const addFavorite = async (fav: Favorito) => {
+    const name = fav.name.trim();
+    const doc = String(fav.docNumber).replace(/\D/g, '');
+    const type = fav.docType;
+    if (!name || !doc || (type !== 'CC' && type !== 'CE')) return;
+    const list = await loadFavoritos();
+    const exists = list.some(f => f.docType === type && f.docNumber === doc);
+    const next = exists
+      ? list.map(f =>
+          f.docType === type && f.docNumber === doc
+            ? {name, docType: type, docNumber: doc}
+            : f,
+        )
+      : [{name, docType: type, docNumber: doc}, ...list].slice(0, 50);
+    await saveFavoritos(next);
+    setFavoritos(next);
+  };
+
+  const removeFavorite = async (fav: Favorito) => {
+    const doc = String(fav.docNumber).replace(/\D/g, '');
+    const type = fav.docType;
+    const list = await loadFavoritos();
+    const next = list.filter(f => !(f.docType === type && f.docNumber === doc));
+    await saveFavoritos(next);
+    setFavoritos(next);
+  };
+
+  const updateFavoriteName = async (fav: Favorito, name: string) => {
+    const doc = String(fav.docNumber).replace(/\D/g, '');
+    const type = fav.docType;
+    const list = await loadFavoritos();
+    const next = list.map(f =>
+      f.docType === type && f.docNumber === doc
+        ? {name: name.trim(), docType: type, docNumber: doc}
+        : f,
+    );
+    await saveFavoritos(next);
+    setFavoritos(next);
   };
 
   useEffect(() => {
@@ -277,6 +294,8 @@ export default function MiBolsillo({navigation}: Props) {
               styles.tabBtn,
               tab === 'transferir' ? styles.tabActive : null,
             ]}
+            accessibilityLabel="tab-transferir"
+            testID="tab-transferir"
             onPress={() => setTab('transferir')}>
             <Text
               style={[
@@ -315,6 +334,8 @@ export default function MiBolsillo({navigation}: Props) {
               value={recipientName}
               onChangeText={t => setRecipientName(t)}
               placeholder="Ingresa el nombre"
+              accessibilityLabel="transfer-name-input"
+              testID="transfer-name-input"
             />
 
             <Text style={styles.label}>Tipo de documento</Text>
@@ -324,6 +345,8 @@ export default function MiBolsillo({navigation}: Props) {
                   styles.comboItem,
                   docType === 'CC' ? styles.comboActive : null,
                 ]}
+                accessibilityLabel="doc-type-CC"
+                testID="doc-type-CC"
                 onPress={() => setDocType('CC')}>
                 <Text
                   style={[
@@ -338,6 +361,8 @@ export default function MiBolsillo({navigation}: Props) {
                   styles.comboItem,
                   docType === 'CE' ? styles.comboActive : null,
                 ]}
+                accessibilityLabel="doc-type-CE"
+                testID="doc-type-CE"
                 onPress={() => setDocType('CE')}>
                 <Text
                   style={[
@@ -357,6 +382,8 @@ export default function MiBolsillo({navigation}: Props) {
               keyboardType="number-pad"
               maxLength={12}
               placeholder="Ingresa el documento"
+              accessibilityLabel="transfer-doc-input"
+              testID="transfer-doc-input"
             />
             <Text
               style={[
@@ -373,6 +400,8 @@ export default function MiBolsillo({navigation}: Props) {
               onChangeText={t => setMonto(t.replace(/[^0-9]/g, ''))}
               keyboardType="number-pad"
               placeholder="$ 0"
+              accessibilityLabel="transfer-amount-input"
+              testID="transfer-amount-input"
             />
             <Text style={styles.hint}>Debe ser menor al saldo disponible</Text>
 
@@ -382,7 +411,9 @@ export default function MiBolsillo({navigation}: Props) {
               style={[
                 styles.primaryBtn,
                 !canSend ? styles.primaryBtnDisabled : null,
-              ]}>
+              ]}
+              accessibilityLabel="transfer-send"
+              testID="transfer-send">
               <Text style={styles.primaryBtnText}>
                 Enviar para realizar la transferencia
               </Text>
@@ -394,7 +425,9 @@ export default function MiBolsillo({navigation}: Props) {
               style={[
                 styles.secondaryBtn,
                 favoritos.length === 0 ? styles.secondaryBtnDisabled : null,
-              ]}>
+              ]}
+              accessibilityLabel="open-fav-list"
+              testID="open-fav-list">
               <MaterialCommunityIcons
                 name="star"
                 size={18}
@@ -654,40 +687,89 @@ export default function MiBolsillo({navigation}: Props) {
                 />
               </TouchableOpacity>
             </View>
+            <TextInput
+              accessibilityLabel="fav-search"
+              testID="fav-search"
+              style={styles.input}
+              value={favQuery}
+              onChangeText={t => setFavQuery(t)}
+              placeholder="Buscar por nombre o documento"
+            />
             {favoritos.length === 0 ? (
               <Text style={styles.hint}>No tienes favoritos registrados.</Text>
             ) : (
               <FlatList
-                data={favoritos}
+                data={favoritos.filter(f => {
+                  const q = favQuery.trim().toLowerCase();
+                  if (!q) return true;
+                  return (
+                    f.name.toLowerCase().includes(q) ||
+                    `${f.docType}-${f.docNumber}`.toLowerCase().includes(q)
+                  );
+                })}
                 keyExtractor={(i, idx) => `${i.docType}-${i.docNumber}-${idx}`}
                 renderItem={({item}) => (
-                  <TouchableOpacity
-                    style={styles.favItem}
-                    onPress={() => {
-                      setSelectedFav(item);
-                      setFavAmount('');
-                      setFavListOpen(false);
-                      setFavConfirmOpen(true);
-                    }}>
-                    <View style={styles.favIcon}>
-                      <MaterialCommunityIcons
-                        name="account"
-                        size={18}
-                        color={COLORS.mid}
-                      />
+                  <View style={styles.favItem}>
+                    <TouchableOpacity
+                      accessibilityLabel={`fav-item-${item.docType}-${item.docNumber}`}
+                      testID={`fav-item-${item.docType}-${item.docNumber}`}
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => {
+                        setSelectedFav(item);
+                        setFavAmount('');
+                        setFavListOpen(false);
+                        setFavConfirmOpen(true);
+                      }}>
+                      <View style={styles.favIcon}>
+                        <MaterialCommunityIcons
+                          name="account"
+                          size={18}
+                          color={COLORS.mid}
+                        />
+                      </View>
+                      <View style={{flex: 1, marginLeft: 10}}>
+                        <Text style={styles.txTitle}>{item.name}</Text>
+                        <Text style={styles.txSub}>
+                          {item.docType}-{item.docNumber}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: 8,
+                      }}>
+                      <TouchableOpacity
+                        accessibilityLabel={`fav-edit-${item.docType}-${item.docNumber}`}
+                        testID={`fav-edit-${item.docType}-${item.docNumber}`}
+                        onPress={() => {
+                          setSelectedFav(item);
+                          setEditName(item.name);
+                          setFavEditOpen(true);
+                        }}>
+                        <MaterialCommunityIcons
+                          name="pencil"
+                          size={18}
+                          color={COLORS.mid}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        accessibilityLabel={`fav-delete-${item.docType}-${item.docNumber}`}
+                        testID={`fav-delete-${item.docType}-${item.docNumber}`}
+                        onPress={() => removeFavorite(item)}>
+                        <MaterialCommunityIcons
+                          name="trash-can-outline"
+                          size={18}
+                          color={COLORS.red}
+                        />
+                      </TouchableOpacity>
                     </View>
-                    <View style={{flex: 1, marginLeft: 10}}>
-                      <Text style={styles.txTitle}>{item.name}</Text>
-                      <Text style={styles.txSub}>
-                        {item.docType}-{item.docNumber}
-                      </Text>
-                    </View>
-                    <MaterialCommunityIcons
-                      name="chevron-right"
-                      size={20}
-                      color={COLORS.mid}
-                    />
-                  </TouchableOpacity>
+                  </View>
                 )}
               />
             )}
@@ -735,6 +817,8 @@ export default function MiBolsillo({navigation}: Props) {
                   onChangeText={t => setFavAmount(t.replace(/[^0-9]/g, ''))}
                   keyboardType="number-pad"
                   placeholder="$ 0"
+                  accessibilityLabel="fav-amount-input"
+                  testID="fav-amount-input"
                 />
                 <TouchableOpacity
                   disabled={
@@ -748,6 +832,8 @@ export default function MiBolsillo({navigation}: Props) {
                       ? styles.primaryBtnDisabled
                       : null,
                   ]}
+                  accessibilityLabel="fav-confirm"
+                  testID="fav-confirm"
                   onPress={() => {
                     const val = Number(
                       String(favAmount).replace(/[^0-9]/g, ''),
@@ -767,6 +853,55 @@ export default function MiBolsillo({navigation}: Props) {
                 </TouchableOpacity>
               </>
             ) : null}
+          </View>
+        </Modal>
+
+        <Modal
+          isVisible={favEditOpen}
+          style={styles.modal}
+          onBackdropPress={() => setFavEditOpen(false)}
+          swipeDirection="down"
+          onSwipeComplete={() => setFavEditOpen(false)}
+          backdropOpacity={0.5}
+          animationIn="slideInUp"
+          animationOut="slideOutDown">
+          <View style={styles.sheet}>
+            <View style={styles.sheetHeader}>
+              <Text style={styles.cardTitle}>Editar favorito</Text>
+              <TouchableOpacity onPress={() => setFavEditOpen(false)}>
+                <MaterialCommunityIcons
+                  name="close"
+                  size={20}
+                  color={COLORS.mid}
+                />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.label}>Nombre</Text>
+            <TextInput
+              style={styles.input}
+              value={editName}
+              onChangeText={t => setEditName(t)}
+              placeholder="Ingresa el nombre"
+              accessibilityLabel="fav-edit-name-input"
+              testID="fav-edit-name-input"
+            />
+            <TouchableOpacity
+              accessibilityLabel="fav-save"
+              testID="fav-save"
+              disabled={!selectedFav || !editName.trim()}
+              style={[
+                styles.primaryBtn,
+                !selectedFav || !editName.trim()
+                  ? styles.primaryBtnDisabled
+                  : null,
+              ]}
+              onPress={async () => {
+                if (!selectedFav || !editName.trim()) return;
+                await updateFavoriteName(selectedFav, editName);
+                setFavEditOpen(false);
+              }}>
+              <Text style={styles.primaryBtnText}>Guardar</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </ScrollView>
