@@ -124,7 +124,7 @@ describe('SMS Retriever OTP', () => {
       }
       const home = await $('~open-otp');
       await home.waitForExist({timeout: 8000});
-    } else {
+  } else {
       await typeCodeManually('123456');
     }
   });
@@ -203,7 +203,7 @@ describe('SMS Retriever OTP', () => {
       }
       const home = await $('~open-otp');
       await home.waitForExist({timeout: 8000});
-    } else {
+  } else {
       await typeCodeManually('444444');
     }
   });
@@ -218,4 +218,4 @@ describe('SMS Retriever OTP', () => {
       throw new Error('La app solicita READ_SMS y no debería');
     }
   });
-});
+  });

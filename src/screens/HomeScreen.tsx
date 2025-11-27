@@ -161,6 +161,28 @@ export default function HomeScreen({
               />
             </View>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.9}
+            onPress={() => navigation?.navigate?.('Cashback')}>
+            <View style={styles.cardHeader}>
+              <MaterialCommunityIcons
+                name="ticket-percent"
+                size={20}
+                color={COLORS.fuchsia}
+              />
+              <Text style={styles.cardTitle}>Cashback</Text>
+            </View>
+            <Text style={[styles.cardValue, {color: COLORS.green}]}>$ 18.500</Text>
+            <View style={styles.cardFooter}>
+              <Text style={styles.cardLink}>Ver más</Text>
+              <MaterialCommunityIcons
+                name="chevron-right"
+                size={18}
+                color={COLORS.mid}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.prefCard}>

@@ -108,15 +108,41 @@ export default function MiBolsillo({navigation}: Props) {
         {
           text: 'Agregar',
           onPress: async () => {
-            await addFavorite({
-              name: snapshot.name || 'Sin nombre',
-              docType: snapshot.docType,
-              docNumber: snapshot.docNumber,
-            });
-            Alert.alert(
-              'Favorito guardado',
-              'El destinatario fue agregado a tus favoritos.',
-            );
+            try {
+              const list = await loadFavoritos();
+              const exists = list.some(
+                f =>
+                  f.docType === snapshot.docType &&
+                  f.docNumber === snapshot.docNumber,
+              );
+              const next = exists
+                ? list.map(f =>
+                    f.docType === snapshot.docType &&
+                    f.docNumber === snapshot.docNumber
+                      ? {
+                          name: snapshot.name || f.name,
+                          docType: f.docType,
+                          docNumber: f.docNumber,
+                        }
+                      : f,
+                  )
+                : [
+                    ...list,
+                    {
+                      name: snapshot.name || 'Sin nombre',
+                      docType: snapshot.docType,
+                      docNumber: snapshot.docNumber,
+                    },
+                  ];
+              await saveFavoritos(next);
+              setFavoritos(next);
+              Alert.alert(
+                'Favorito guardado',
+                'El destinatario fue agregado a tus favoritos.',
+              );
+            } catch (e) {
+              Alert.alert('Error', 'No se pudo guardar el favorito.');
+            }
           },
         },
       ],
@@ -268,7 +294,10 @@ export default function MiBolsillo({navigation}: Props) {
             </Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="coin" size={18} color="#F5B300" />
+            <MaterialCommunityIcons
+              name="cash"
+              size={18}
+              color="#F5B300" />
             <Text style={styles.summaryLabel}>Cashback acumulado</Text>
             <Text style={styles.summaryValue}>$ 0</Text>
           </View>

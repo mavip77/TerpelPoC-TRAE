@@ -31,7 +31,7 @@ describe('HU 29675 - Validación y avance automático (iOS)', () => {
     await verifyBtn.waitForEnabled({timeout: 5000});
     await verifyBtn.click();
     const modal = await $('~otp-modal');
-    await modal.waitForExist({timeout: 15000, reverse: true});
+    await modal.waitForExist({timeout: 8000, reverse: true});
     const homeBtn = await $('~open-otp');
     await homeBtn.waitForExist({timeout: 8000});
   });
@@ -67,13 +67,18 @@ describe('HU 29675 - Validación y avance automático (iOS)', () => {
     await verifyBtn.waitForEnabled({timeout: 2000, reverse: true});
   });
 
-  it('29684: experiencia fluida al ingresar OTP correcto', async () => {
+  it('29684: experiencia fluida al ingresar OTP correcto (cierre < 5s)', async () => {
     await openOtpModal();
+    const start = Date.now();
     await fillCode('123456');
     const verifyBtn = await $('~verify-otp');
     await verifyBtn.waitForEnabled({timeout: 5000});
     await verifyBtn.click();
     const modal = await $('~otp-modal');
-    await modal.waitForExist({timeout: 20000, reverse: true});
+    await modal.waitForExist({timeout: 5500, reverse: true});
+    const elapsed = Date.now() - start;
+    if (elapsed > 5000) {
+      throw new Error(`Cierre no fluido: ${elapsed}ms`);
+    }
   });
 });

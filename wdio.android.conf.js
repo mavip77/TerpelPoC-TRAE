@@ -45,9 +45,7 @@ exports.config = {
   },
   afterTest: async function (test, context, {error, result, duration, passed}) {
     try {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${
-        passed ? 'passed' : 'failed'
-      }.png`;
+      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${passed ? 'passed' : 'failed'}.png`;
       const file = `./reports/screenshots/android/${name}`;
       fs.mkdirSync('./reports/screenshots/android', {recursive: true});
       await browser.saveScreenshot(file);
