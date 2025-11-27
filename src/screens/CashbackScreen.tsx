@@ -2,6 +2,7 @@ import React, {useMemo, useState} from 'react';
 import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../constants/HomeConstants';
+import {applyRedemption, sanitizeAmount, validateRedemption} from '../utils/transactions';
 
 type Bucket = {campaign: string; amount: number; vence: string};
 
@@ -12,6 +13,7 @@ export default function CashbackScreen(): React.JSX.Element {
     {campaign: 'Global', amount: 8500, vence: '2026-03-31'},
   ]);
   const [amount, setAmount] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const totalCashback = useMemo(
     () => buckets.reduce((sum, b) => sum + Math.max(0, b.amount), 0),
@@ -74,9 +76,24 @@ export default function CashbackScreen(): React.JSX.Element {
             paddingVertical: 10,
             alignSelf: 'flex-start',
             marginTop: 10,
+          }}
+          onPress={() => {
+            const amt = sanitizeAmount(amount);
+            const res = validateRedemption(buckets, amt);
+            if (!res.valid) {
+              setError(res.errors.join('. '));
+              return;
+            }
+            const next = applyRedemption(buckets, res.amount);
+            setBuckets(next);
+            setAmount('');
+            setError('');
           }}>
           <Text style={{color: COLORS.white, fontWeight: '700'}}>Redimir ahora</Text>
         </TouchableOpacity>
+        {error ? (
+          <Text style={{color: '#DC2626', marginTop: 8}}>{error}</Text>
+        ) : null}
       </View>
     </ScrollView>
   );

@@ -1,0 +1,265 @@
+> Task :gradle-plugin:settings-plugin:checkKotlinGradlePluginConfigurationErrors
+> Task :gradle-plugin:shared:checkKotlinGradlePluginConfigurationErrors
+> Task :gradle-plugin:shared:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:shared:compileJava NO-SOURCE
+> Task :gradle-plugin:shared:processResources NO-SOURCE
+> Task :gradle-plugin:shared:classes UP-TO-DATE
+> Task :gradle-plugin:shared:jar UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:settings-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:settings-plugin:jar UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:checkKotlinGradlePluginConfigurationErrors
+> Task :gradle-plugin:react-native-gradle-plugin:compileKotlin UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:compileJava NO-SOURCE
+> Task :gradle-plugin:react-native-gradle-plugin:pluginDescriptors UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:processResources UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:classes UP-TO-DATE
+> Task :gradle-plugin:react-native-gradle-plugin:jar UP-TO-DATE
+> Task :app:generateAutolinkingPackageList
+> Task :app:generateCodegenSchemaFromJavaScript SKIPPED
+> Task :app:generateCodegenArtifactsFromSchema SKIPPED
+> Task :app:preBuild
+> Task :app:preDebugBuild
+> Task :app:mergeDebugNativeDebugMetadata NO-SOURCE
+> Task :app:checkKotlinGradlePluginConfigurationErrors
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :d11_react-native-fast-image:preBuild UP-TO-DATE
+> Task :d11_react-native-fast-image:preDebugBuild UP-TO-DATE
+> Task :d11_react-native-fast-image:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-keychain:preBuild UP-TO-DATE
+> Task :react-native-keychain:preDebugBuild UP-TO-DATE
+> Task :react-native-keychain:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-otp-verify:preBuild UP-TO-DATE
+> Task :react-native-otp-verify:preDebugBuild UP-TO-DATE
+> Task :react-native-otp-verify:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-safe-area-context:preBuild UP-TO-DATE
+> Task :react-native-safe-area-context:preDebugBuild UP-TO-DATE
+> Task :react-native-safe-area-context:writeDebugAarMetadata UP-TO-DATE
+> Task :react-native-vector-icons:preBuild UP-TO-DATE
+> Task :react-native-vector-icons:preDebugBuild UP-TO-DATE
+> Task :react-native-vector-icons:writeDebugAarMetadata UP-TO-DATE
+> Task :app:generateDebugResValues UP-TO-DATE
+> Task :d11_react-native-fast-image:generateDebugResValues UP-TO-DATE
+> Task :d11_react-native-fast-image:generateDebugResources UP-TO-DATE
+> Task :d11_react-native-fast-image:packageDebugResources UP-TO-DATE
+> Task :react-native-keychain:generateDebugResValues UP-TO-DATE
+> Task :react-native-keychain:generateDebugResources UP-TO-DATE
+> Task :react-native-keychain:packageDebugResources UP-TO-DATE
+> Task :react-native-otp-verify:generateDebugResValues UP-TO-DATE
+> Task :react-native-otp-verify:generateDebugResources UP-TO-DATE
+> Task :app:checkDebugAarMetadata
+> Task :react-native-otp-verify:packageDebugResources UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResValues UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugResources UP-TO-DATE
+> Task :react-native-safe-area-context:packageDebugResources UP-TO-DATE
+> Task :react-native-vector-icons:generateDebugResValues UP-TO-DATE
+> Task :react-native-vector-icons:generateDebugResources UP-TO-DATE
+> Task :react-native-vector-icons:packageDebugResources UP-TO-DATE
+> Task :app:mapDebugSourceSetPaths
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:createDebugCompatibleScreenManifests UP-TO-DATE
+> Task :app:extractDeepLinksDebug UP-TO-DATE
+> Task :d11_react-native-fast-image:extractDeepLinksDebug UP-TO-DATE
+> Task :d11_react-native-fast-image:processDebugManifest UP-TO-DATE
+> Task :react-native-keychain:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-keychain:processDebugManifest UP-TO-DATE
+> Task :react-native-otp-verify:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-otp-verify:processDebugManifest UP-TO-DATE
+> Task :react-native-safe-area-context:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-safe-area-context:processDebugManifest UP-TO-DATE
+> Task :react-native-vector-icons:extractDeepLinksDebug UP-TO-DATE
+> Task :react-native-vector-icons:processDebugManifest UP-TO-DATE
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest UP-TO-DATE
+> Task :app:processDebugManifestForPackage UP-TO-DATE
+> Task :d11_react-native-fast-image:compileDebugLibraryResources UP-TO-DATE
+> Task :d11_react-native-fast-image:parseDebugLocalResources UP-TO-DATE
+> Task :d11_react-native-fast-image:generateDebugRFile UP-TO-DATE
+> Task :react-native-keychain:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-keychain:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-keychain:generateDebugRFile UP-TO-DATE
+> Task :react-native-otp-verify:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-otp-verify:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-otp-verify:generateDebugRFile UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-safe-area-context:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-safe-area-context:generateDebugRFile UP-TO-DATE
+> Task :react-native-vector-icons:compileDebugLibraryResources UP-TO-DATE
+> Task :react-native-vector-icons:parseDebugLocalResources UP-TO-DATE
+> Task :react-native-vector-icons:generateDebugRFile UP-TO-DATE
+> Task :d11_react-native-fast-image:generateDebugBuildConfig UP-TO-DATE
+> Task :d11_react-native-fast-image:javaPreCompileDebug UP-TO-DATE
+> Task :d11_react-native-fast-image:compileDebugJavaWithJavac UP-TO-DATE
+> Task :d11_react-native-fast-image:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-keychain:checkKotlinGradlePluginConfigurationErrors
+> Task :react-native-keychain:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-keychain:compileDebugKotlin UP-TO-DATE
+> Task :react-native-keychain:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-keychain:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-keychain:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-otp-verify:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-otp-verify:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-otp-verify:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-otp-verify:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-safe-area-context:checkKotlinGradlePluginConfigurationErrors
+> Task :react-native-safe-area-context:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugKotlin UP-TO-DATE
+> Task :react-native-safe-area-context:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :react-native-vector-icons:generateDebugBuildConfig UP-TO-DATE
+> Task :react-native-vector-icons:javaPreCompileDebug UP-TO-DATE
+> Task :react-native-vector-icons:compileDebugJavaWithJavac UP-TO-DATE
+> Task :react-native-vector-icons:bundleLibCompileToJarDebug UP-TO-DATE
+> Task :app:javaPreCompileDebug UP-TO-DATE
+> Task :app:mergeDebugShaders UP-TO-DATE
+> Task :app:compileDebugShaders NO-SOURCE
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :d11_react-native-fast-image:mergeDebugShaders UP-TO-DATE
+> Task :d11_react-native-fast-image:compileDebugShaders NO-SOURCE
+> Task :d11_react-native-fast-image:generateDebugAssets UP-TO-DATE
+> Task :d11_react-native-fast-image:packageDebugAssets UP-TO-DATE
+> Task :react-native-keychain:mergeDebugShaders UP-TO-DATE
+> Task :react-native-keychain:compileDebugShaders NO-SOURCE
+> Task :react-native-keychain:generateDebugAssets UP-TO-DATE
+> Task :react-native-keychain:packageDebugAssets UP-TO-DATE
+> Task :react-native-otp-verify:mergeDebugShaders UP-TO-DATE
+> Task :react-native-otp-verify:compileDebugShaders NO-SOURCE
+> Task :react-native-otp-verify:generateDebugAssets UP-TO-DATE
+> Task :react-native-otp-verify:packageDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugShaders UP-TO-DATE
+> Task :react-native-safe-area-context:compileDebugShaders NO-SOURCE
+> Task :react-native-safe-area-context:generateDebugAssets UP-TO-DATE
+> Task :react-native-safe-area-context:packageDebugAssets UP-TO-DATE
+> Task :react-native-vector-icons:mergeDebugShaders UP-TO-DATE
+> Task :react-native-vector-icons:compileDebugShaders NO-SOURCE
+> Task :react-native-vector-icons:generateDebugAssets UP-TO-DATE
+> Task :react-native-vector-icons:packageDebugAssets UP-TO-DATE
+> Task :app:mergeDebugResources
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:compressDebugAssets UP-TO-DATE
+> Task :react-native-keychain:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :d11_react-native-fast-image:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-otp-verify:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :react-native-vector-icons:bundleLibRuntimeToJarDebug UP-TO-DATE
+> Task :app:desugarDebugFileDependencies UP-TO-DATE
+> Task :d11_react-native-fast-image:processDebugJavaRes UP-TO-DATE
+> Task :react-native-keychain:processDebugJavaRes UP-TO-DATE
+> Task :react-native-otp-verify:processDebugJavaRes NO-SOURCE
+> Task :react-native-safe-area-context:processDebugJavaRes UP-TO-DATE
+> Task :react-native-vector-icons:processDebugJavaRes NO-SOURCE
+> Task :react-native-keychain:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-safe-area-context:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :d11_react-native-fast-image:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-otp-verify:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :react-native-vector-icons:bundleLibRuntimeToDirDebug UP-TO-DATE
+> Task :app:mergeDebugJniLibFolders UP-TO-DATE
+> Task :d11_react-native-fast-image:mergeDebugJniLibFolders UP-TO-DATE
+> Task :d11_react-native-fast-image:mergeDebugNativeLibs NO-SOURCE
+> Task :d11_react-native-fast-image:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-keychain:mergeDebugJniLibFolders UP-TO-DATE
+> Task :react-native-keychain:mergeDebugNativeLibs NO-SOURCE
+> Task :react-native-keychain:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-otp-verify:mergeDebugJniLibFolders UP-TO-DATE
+> Task :react-native-otp-verify:mergeDebugNativeLibs NO-SOURCE
+> Task :react-native-otp-verify:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugJniLibFolders UP-TO-DATE
+> Task :react-native-safe-area-context:mergeDebugNativeLibs NO-SOURCE
+> Task :react-native-safe-area-context:copyDebugJniLibsProjectOnly UP-TO-DATE
+> Task :react-native-vector-icons:mergeDebugJniLibFolders
+> Task :react-native-vector-icons:mergeDebugNativeLibs NO-SOURCE
+> Task :react-native-vector-icons:copyDebugJniLibsProjectOnly
+> Task :app:validateSigningDebug
+> Task :app:checkDebugDuplicateClasses
+> Task :app:processDebugResources
+> Task :app:mergeDebugNativeLibs
+> Task :app:writeDebugAppMetadata
+> Task :app:writeDebugSigningConfigVersions
+> Task :d11_react-native-fast-image:stripDebugDebugSymbols NO-SOURCE
+> Task :app:mergeLibDexDebug
+> Task :d11_react-native-fast-image:copyDebugJniLibsProjectAndLocalJars
+> Task :app:stripDebugDebugSymbols
+> Task :app:mergeExtDexDebug
+> Task :app:compileDebugKotlin
+> Task :d11_react-native-fast-image:extractDebugAnnotations
+> Task :app:compileDebugJavaWithJavac
+> Task :app:dexBuilderDebug
+> Task :app:processDebugJavaRes
+> Task :app:mergeDebugGlobalSynthetics
+> Task :d11_react-native-fast-image:extractDeepLinksForAarDebug
+> Task :d11_react-native-fast-image:mergeDebugGeneratedProguardFiles
+> Task :d11_react-native-fast-image:mergeDebugConsumerProguardFiles
+> Task :d11_react-native-fast-image:prepareDebugArtProfile
+> Task :d11_react-native-fast-image:prepareLintJarForPublish
+> Task :react-native-keychain:stripDebugDebugSymbols NO-SOURCE
+> Task :react-native-keychain:copyDebugJniLibsProjectAndLocalJars
+> Task :react-native-keychain:extractDebugAnnotations
+> Task :react-native-keychain:extractDeepLinksForAarDebug
+> Task :react-native-keychain:mergeDebugGeneratedProguardFiles
+> Task :react-native-keychain:mergeDebugConsumerProguardFiles
+> Task :react-native-keychain:prepareDebugArtProfile
+> Task :react-native-keychain:prepareLintJarForPublish
+> Task :react-native-otp-verify:stripDebugDebugSymbols NO-SOURCE
+> Task :react-native-otp-verify:copyDebugJniLibsProjectAndLocalJars
+> Task :react-native-otp-verify:extractDebugAnnotations
+> Task :react-native-otp-verify:extractDeepLinksForAarDebug
+> Task :d11_react-native-fast-image:mergeDebugJavaResource
+> Task :react-native-otp-verify:mergeDebugGeneratedProguardFiles
+> Task :app:mergeProjectDexDebug
+> Task :react-native-keychain:mergeDebugJavaResource
+> Task :d11_react-native-fast-image:syncDebugLibJars
+> Task :d11_react-native-fast-image:bundleDebugAar
+> Task :d11_react-native-fast-image:assembleDebug
+> Task :react-native-keychain:syncDebugLibJars
+> Task :react-native-keychain:bundleDebugAar
+> Task :react-native-keychain:assembleDebug
+> Task :react-native-otp-verify:mergeDebugConsumerProguardFiles
+> Task :react-native-otp-verify:prepareDebugArtProfile
+> Task :react-native-otp-verify:prepareLintJarForPublish
+> Task :react-native-safe-area-context:stripDebugDebugSymbols NO-SOURCE
+> Task :react-native-safe-area-context:copyDebugJniLibsProjectAndLocalJars
+> Task :react-native-otp-verify:mergeDebugJavaResource
+> Task :react-native-safe-area-context:extractDebugAnnotations
+> Task :react-native-otp-verify:syncDebugLibJars
+> Task :react-native-otp-verify:bundleDebugAar
+> Task :react-native-otp-verify:assembleDebug
+> Task :react-native-safe-area-context:extractDeepLinksForAarDebug
+> Task :react-native-safe-area-context:mergeDebugGeneratedProguardFiles
+> Task :react-native-safe-area-context:mergeDebugConsumerProguardFiles
+> Task :react-native-safe-area-context:prepareDebugArtProfile
+> Task :react-native-safe-area-context:prepareLintJarForPublish
+> Task :react-native-vector-icons:stripDebugDebugSymbols NO-SOURCE
+> Task :react-native-vector-icons:copyDebugJniLibsProjectAndLocalJars
+> Task :react-native-vector-icons:extractDebugAnnotations
+> Task :react-native-vector-icons:extractDeepLinksForAarDebug
+> Task :react-native-vector-icons:mergeDebugGeneratedProguardFiles
+> Task :react-native-vector-icons:mergeDebugConsumerProguardFiles
+> Task :react-native-safe-area-context:mergeDebugJavaResource
+> Task :react-native-vector-icons:prepareDebugArtProfile
+> Task :react-native-safe-area-context:syncDebugLibJars
+> Task :react-native-safe-area-context:bundleDebugAar
+> Task :react-native-safe-area-context:assembleDebug
+> Task :react-native-vector-icons:prepareLintJarForPublish
+> Task :react-native-vector-icons:mergeDebugJavaResource
+> Task :react-native-vector-icons:syncDebugLibJars
+> Task :react-native-vector-icons:bundleDebugAar
+> Task :react-native-vector-icons:assembleDebug
+> Task :app:mergeDebugJavaResource
+> Task :app:packageDebug
+> Task :app:createDebugApkListingFileRedirect
+> Task :app:assembleDebug
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/8.10.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 21s
+204 actionable tasks: 81 executed, 123 up-to-date

@@ -42,6 +42,57 @@ export default function OtpModal({
   const canVerify = code.length === 6 && /^[0-9]{6}$/.test(code) && !loading;
   const autoSubmitRef = useRef<NodeJS.Timeout | null>(null);
 
+  const triggerShake = useCallback(() => {
+    if (
+      typeof (Animated as any)?.sequence === 'function' &&
+      typeof (Animated as any)?.timing === 'function'
+    ) {
+      (Animated as any)
+        .sequence([
+          (Animated as any).timing(errorShake, {
+            toValue: 10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: -10,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: 8,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: -8,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+          (Animated as any).timing(errorShake, {
+            toValue: 0,
+            duration: 50,
+            useNativeDriver: true,
+          }),
+        ])
+        .start();
+    }
+  }, [errorShake]);
+
+  const handleVerify = useCallback(async () => {
+    if (!canVerify) {
+      return;
+    }
+    setLoading(true);
+    const ok = (await onVerify?.(code)) ?? false;
+    setLoading(false);
+    if (ok) {
+      onClose();
+    } else {
+      triggerShake();
+    }
+  }, [canVerify, onVerify, onClose, code, triggerShake]);
+
   useEffect(() => {
     if (!visible) {
       return;
@@ -101,56 +152,6 @@ export default function OtpModal({
     }
   };
 
-  const triggerShake = useCallback(() => {
-    if (
-      typeof (Animated as any)?.sequence === 'function' &&
-      typeof (Animated as any)?.timing === 'function'
-    ) {
-      (Animated as any)
-        .sequence([
-          (Animated as any).timing(errorShake, {
-            toValue: 10,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          (Animated as any).timing(errorShake, {
-            toValue: -10,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          (Animated as any).timing(errorShake, {
-            toValue: 8,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          (Animated as any).timing(errorShake, {
-            toValue: -8,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          (Animated as any).timing(errorShake, {
-            toValue: 0,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-        ])
-        .start();
-    }
-  }, [errorShake]);
-
-  const handleVerify = useCallback(async () => {
-    if (!canVerify) {
-      return;
-    }
-    setLoading(true);
-    const ok = (await onVerify?.(code)) ?? false;
-    setLoading(false);
-    if (ok) {
-      onClose();
-    } else {
-      triggerShake();
-    }
-  }, [canVerify, onVerify, onClose, code, triggerShake]);
 
   const height = Math.floor(Dimensions.get('window').height * 0.78);
 

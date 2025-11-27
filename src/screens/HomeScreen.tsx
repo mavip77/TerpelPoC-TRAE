@@ -121,7 +121,7 @@ export default function HomeScreen({
         <View style={styles.cardsRow}>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <MaterialCommunityIcons name="coin" size={20} color="#F5B300" />
+              <MaterialCommunityIcons name="currency-usd" size={20} color="#F5B300" />
               <Text style={styles.cardTitle}>Hoy sumas</Text>
             </View>
             <Text style={[styles.cardValue, {color: COLORS.fuchsia}]}>0</Text>
@@ -310,7 +310,7 @@ export default function HomeScreen({
               />
               <Text style={styles.pointsText}>{item.title}</Text>
               <View style={styles.pointsCoin}>
-                <MaterialCommunityIcons name="coin" size={18} color="#F5B300" />
+                <MaterialCommunityIcons name="currency-usd" size={18} color="#F5B300" />
               </View>
               <TouchableOpacity style={styles.quickBtn}>
                 <Text style={styles.quickBtnText}>S</Text>

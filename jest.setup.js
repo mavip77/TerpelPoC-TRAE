@@ -105,6 +105,14 @@ J.mock('@react-native/virtualized-lists', () => ({
   VirtualizedList: 'VirtualizedList',
 }));
 
+J.mock('react-native-vector-icons/MaterialCommunityIcons', () => {
+  const React = require('react');
+  return props => React.createElement('MaterialCommunityIcons', props);
+});
+J.mock('react-native-screens', () => ({
+  enableScreens: () => {},
+}));
+
 J.mock('react-native/Libraries/Utilities/PixelRatio', () => ({
   get: () => 2,
   roundToNearestPixel: n => n,

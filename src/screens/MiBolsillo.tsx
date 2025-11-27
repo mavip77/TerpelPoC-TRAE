@@ -226,7 +226,7 @@ export default function MiBolsillo({navigation}: Props) {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.backBtn}
-          onPress={() => navigation.goBack()}>
+          onPress={() => navigation?.goBack?.()}>
           <MaterialCommunityIcons
             name="chevron-left"
             size={24}
@@ -251,7 +251,7 @@ export default function MiBolsillo({navigation}: Props) {
             </Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="coin" size={18} color="#F5B300" />
+            <MaterialCommunityIcons name="currency-usd" size={18} color="#F5B300" />
             <Text style={styles.summaryLabel}>Cashback acumulado</Text>
             <Text style={styles.summaryValue}>$ 0</Text>
           </View>

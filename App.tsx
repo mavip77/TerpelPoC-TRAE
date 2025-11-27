@@ -21,16 +21,18 @@ import MiBolsillo from './src/screens/MiBolsillo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {enableScreens} from 'react-native-screens';
 
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
+  enableScreens(true);
   const [seedCode, setSeedCode] = useState<string | undefined>(undefined);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [signature, setSignature] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    let remove: (() => void) | undefined;
+    let otpSub: { remove: () => void } | undefined;
     async function initSms() {
       if (Platform.OS !== 'android') {
         return;
@@ -46,7 +48,7 @@ function App(): React.JSX.Element {
             setSignature(hashes[0]);
           }
         } catch {}
-        remove = await mod.startOtpListener((message: string) => {
+        otpSub = await mod.startOtpListener((message: string) => {
           const match = message.match(/(?:^|\D)(\d{6})(?:\D|$)/);
           if (match && match[1]) {
             setSeedCode(match[1]);
@@ -58,7 +60,7 @@ function App(): React.JSX.Element {
     }
     initSms();
     return () => {
-      remove?.();
+      otpSub?.remove();
     };
   }, []);
 
