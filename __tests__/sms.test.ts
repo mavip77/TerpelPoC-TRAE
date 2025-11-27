@@ -1,36 +1,33 @@
-import {sendSmsPayment, sendSmsSecurityLogin} from '../src/services/sms';
+import {sendTransferPushNotify, sendTransferSms} from '../src/services/sms';
 
-describe('SMS Service', () => {
-  it('no envía SMS si estado no aceptado', async () => {
-    const res = await sendSmsPayment('+573000000000', {
-      amount: 10000,
-      station: 'Estación A',
-      ref: 'ABC123',
-      status: 'Rechazado',
-    }, false, false);
-    expect(res.sent).toBe(false);
+describe('Servicios de transferencia', () => {
+  beforeEach(() => {
+    (global as any).fetch = jest.fn(async (url: string, init: any) => {
+      return {ok: true};
+    });
   });
-  it('envía SMS pago aceptado sin datos y sin push', async () => {
-    const res = await sendSmsPayment('+573000000000', {
-      amount: 20000,
-      station: 'Estación A',
-      ref: 'ABC123',
+
+  it('sendTransferPushNotify solo envía en estado Aceptado', async () => {
+    const ok1 = await sendTransferPushNotify({
+      userId: 'user-1',
+      amount: 1000,
+      senderName: 'Tú',
       status: 'Aceptado',
-    }, false, false);
-    expect(res.sent).toBe(true);
-    expect(String(res.content)).toMatch(/Pago exitoso/);
+    });
+    expect(ok1).toBe(true);
+    const ok2 = await sendTransferPushNotify({
+      userId: 'user-2',
+      amount: 500,
+      senderName: 'Tú',
+      status: 'Rechazado',
+    });
+    expect(ok2).toBe(false);
   });
-  it('seguridad: envía SMS si dispositivo nuevo', async () => {
-    const res = await sendSmsSecurityLogin(
-      '+573000000000',
-      'user-1',
-      'dev-2',
-      ['dev-1'],
-      false,
-      false,
-    );
+
+  it('sendTransferSms construye el contenido para Aceptado', async () => {
+    const res = await sendTransferSms('+57 300 000 0000', 1500, 'Juan', 'Aceptado');
     expect(res.sent).toBe(true);
-    expect(String(res.content)).toMatch(/Alerta seguridad/);
+    expect(String(res.content)).toContain('Recibiste $1.500 de Juan');
   });
 });
 

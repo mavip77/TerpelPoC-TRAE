@@ -1,0 +1,16 @@
+com/twilio/rest/api/v2010/account/Message$Creator.class
+com/terpel/sms/core/NotifyService.class
+com/terpel/sms/model/TransferNotifyRequest.class
+com/terpel/sms/api/InboxController.class
+com/terpel/sms/api/SmsController.class
+com/terpel/sms/api/NotifyController.class
+com/terpel/sms/model/TransferSmsRequest.class
+com/terpel/sms/model/InboxMessage.class
+com/terpel/sms/model/PaymentRequest.class
+com/twilio/rest/api/v2010/account/Message.class
+com/terpel/sms/model/InboxPage.class
+com/twilio/Twilio.class
+com/terpel/sms/model/SecurityRequest.class
+com/terpel/sms/SmsServiceApplication.class
+com/twilio/type/PhoneNumber.class
+com/terpel/sms/core/SmsService.class

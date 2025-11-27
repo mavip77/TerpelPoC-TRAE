@@ -1,0 +1,15 @@
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/api/SmsController.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/PaymentRequest.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/twilio/Twilio.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/TransferSmsRequest.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/twilio/type/PhoneNumber.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/InboxPage.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/twilio/rest/api/v2010/account/Message.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/TransferNotifyRequest.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/InboxMessage.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/model/SecurityRequest.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/api/InboxController.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/core/NotifyService.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/core/SmsService.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/SmsServiceApplication.java
+/mnt/c/Users/lsvc/.gemini/antigravity/playground/molten-kuiper/terpel/TerpelPoC-TRAE/backend/sms-service/src/main/java/com/terpel/sms/api/NotifyController.java

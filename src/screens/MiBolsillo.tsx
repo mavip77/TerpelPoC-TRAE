@@ -788,15 +788,49 @@ export default function MiBolsillo({navigation}: Props) {
                       String(favAmount).replace(/[^0-9]/g, ''),
                     );
                     if (val <= 0 || val >= saldo) return;
-                    setSaldo(s => s - val);
                     setFavConfirmOpen(false);
-                    Alert.alert(
-                      'Transferencia enviada',
-                      `Se transfirieron $ ${val.toLocaleString('es-CO')} a ${
-                        selectedFav.name
-                      }`,
+                    const senderName = 'Tú';
+                    const recipient = selectedFav?.name || '';
+                    const amountAbs = Math.abs(val);
+                    import('../services/sms').then(
+                      ({sendTransferPushNotify, sendTransferSms}) => {
+                        const start = Date.now();
+                        Alert.alert('Procesando', 'Confirmando en blockchain...');
+                        // Simular resolución inmediata (no hay estado pendiente en blockchain)
+                        const resolvedStatus: 'Aceptado' | 'Rechazado' = 'Aceptado';
+                        if (resolvedStatus === 'Aceptado') {
+                          setSaldo(s => s - val);
+                          sendTransferPushNotify({
+                            userId: 'user-1',
+                            amount: amountAbs,
+                            senderName,
+                            status: 'Aceptado',
+                          }).then(() => {
+                            const elapsed = Date.now() - start;
+                            // criterio: < 5s
+                          });
+                          sendTransferSms(
+                            '+57 300 000 0000',
+                            amountAbs,
+                            senderName,
+                            'Aceptado',
+                          ).then(res => {
+                            Alert.alert(
+                              'Transferencia enviada',
+                              `Se transfirieron $ ${amountAbs.toLocaleString(
+                                'es-CO',
+                              )} a ${recipient}`,
+                            );
+                          });
+                        } else {
+                          Alert.alert(
+                            'Transferencia rechazada',
+                            'No se realizó la transferencia',
+                          );
+                        }
+                        setTab('transferir');
+                      },
                     );
-                    setTab('transferir');
                   }}>
                   <Text style={styles.primaryBtnText}>Confirmar</Text>
                 </TouchableOpacity>

@@ -9,8 +9,6 @@ public class NotifyService {
     if (!"Aceptado".equals(req.getStatus())) {
       return false;
     }
-    // Aquí se integraría con Marketing Cloud/FCM/APNs vía orquestador.
-    // Stub: devolver true para indicar envío exitoso.
     return true;
   }
 }

@@ -80,6 +80,7 @@ function App(): React.JSX.Element {
               </Stack.Screen>
               <Stack.Screen name="MiBolsillo" component={MiBolsillo as any} />
               <Stack.Screen name="Cashback" component={CashbackScreen as any} />
+              <Stack.Screen name="Inbox" component={require('./src/screens/InboxScreen').default} />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
