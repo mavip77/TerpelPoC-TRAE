@@ -137,6 +137,8 @@ export default function HomeScreen({
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.9}
+            accessibilityLabel="open-mi-bolsillo"
+            testID="open-mi-bolsillo"
             onPress={
               onNavigateMiBolsillo ??
               (() => navigation?.navigate?.('MiBolsillo'))

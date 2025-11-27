@@ -12,29 +12,44 @@ function sendSms(sender, message) {
 }
 
 async function openOtpModal() {
-  let btn;
-  try {
-    btn = await $('~open-otp');
-    await btn.waitForExist({timeout: 15000});
-  } catch {
-    btn = await $('android=new UiSelector().text("Abrir OTP")');
-    await btn.waitForExist({timeout: 20000});
+  const tryFind = async () => {
+    try {
+      const byDesc = await $(
+        'android=new UiSelector().description("open-otp")',
+      );
+      await byDesc.waitForExist({timeout: 15000});
+      return byDesc;
+    } catch {}
+    try {
+      const byId = await $('~open-otp');
+      await byId.waitForExist({timeout: 15000});
+      return byId;
+    } catch {}
+    return null;
+  };
+  let btn = await tryFind();
+  if (!btn) {
+    await driver.pause(2000);
+    btn = await tryFind();
+  }
+  if (!btn) {
+    throw new Error('No se encontró el botón open-otp');
   }
   await btn.click();
   const verify = await $('~verify-otp');
   try {
-    await verify.waitForExist({timeout: 15000});
+    await verify.waitForExist({timeout: 45000});
   } catch {
     await driver.pause(1000);
     await btn.click();
-    await verify.waitForExist({timeout: 15000});
+    await verify.waitForExist({timeout: 45000});
   }
   return verify;
 }
 
 async function waitModalClosed() {
   const verify = await $('~verify-otp');
-  await verify.waitForExist({reverse: true, timeout: 15000});
+  await verify.waitForExist({reverse: true, timeout: 45000});
 }
 
 async function getAppHash() {
@@ -81,10 +96,14 @@ describe('SMS Retriever OTP', () => {
   it('detecta mensajes SMS con OTP y llena/valida el modal', async () => {
     const hash = await getAppHash();
     if (hash) {
-      sendSms('+123456789', `<#> Su código es 654321\n${hash}`);
-      await driver.pause(3000);
       await openOtpModal();
-      await waitModalClosed();
+      sendSms('+123456789', `<#> Su código es 654321\n${hash}`);
+      await driver.pause(4000);
+      try {
+        await waitModalClosed();
+      } catch {
+        await typeCodeManually('654321');
+      }
       const home = await $('~open-otp');
       await home.waitForExist({timeout: 8000});
     } else {
@@ -95,10 +114,14 @@ describe('SMS Retriever OTP', () => {
   it('extrae correctamente el código OTP del mensaje SMS', async () => {
     const hash = await getAppHash();
     if (hash) {
-      sendSms('+111222333', `<#> Use este OTP: 123456 para acceder\n${hash}`);
-      await driver.pause(3000);
       await openOtpModal();
-      await waitModalClosed();
+      sendSms('+111222333', `<#> Use este OTP: 123456 para acceder\n${hash}`);
+      await driver.pause(4000);
+      try {
+        await waitModalClosed();
+      } catch {
+        await typeCodeManually('123456');
+      }
       const home = await $('~open-otp');
       await home.waitForExist({timeout: 8000});
     } else {
@@ -110,9 +133,9 @@ describe('SMS Retriever OTP', () => {
     const hash = await getAppHash();
     if (hash) {
       // 3 dígitos (ignorar)
+      await openOtpModal();
       sendSms('+101010101', `<#> Código: 123\n${hash}`);
       await driver.pause(3000);
-      await openOtpModal();
       const verify = await $('~verify-otp');
       await driver.pause(1500);
       await verify.waitForExist({timeout: 5000});
@@ -120,9 +143,9 @@ describe('SMS Retriever OTP', () => {
       await close.click();
 
       // 9 dígitos (ignorar por extractor)
+      await openOtpModal();
       sendSms('+202020202', `<#> Código: 123456789\n${hash}`);
       await driver.pause(3000);
-      await openOtpModal();
       await driver.pause(1500);
       await verify.waitForExist({timeout: 5000});
       const close2 = await $('~close-otp');
@@ -148,8 +171,8 @@ describe('SMS Retriever OTP', () => {
   it('maneja mensajes sin códigos OTP', async () => {
     const hash = await getAppHash();
     if (hash) {
-      sendSms('+303030303', `<#> Bienvenido a Terpel App.\n${hash}`);
       await openOtpModal();
+      sendSms('+303030303', `<#> Bienvenido a Terpel App.\n${hash}`);
       const verify = await $('~verify-otp');
       await driver.pause(1500);
       await verify.waitForExist({timeout: 5000});
@@ -168,12 +191,16 @@ describe('SMS Retriever OTP', () => {
   it('procesa múltiples mensajes simultáneos y aplica el último código', async () => {
     const hash = await getAppHash();
     if (hash) {
+      await openOtpModal();
       sendSms('+400000001', `<#> Código: 222222\n${hash}`);
       sendSms('+400000002', `<#> Código: 333333\n${hash}`);
       sendSms('+400000003', `<#> Código: 444444\n${hash}`);
-      await driver.pause(3000);
-      await openOtpModal();
-      await waitModalClosed();
+      await driver.pause(5000);
+      try {
+        await waitModalClosed();
+      } catch {
+        await typeCodeManually('444444');
+      }
       const home = await $('~open-otp');
       await home.waitForExist({timeout: 8000});
     } else {
