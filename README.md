@@ -1,79 +1,108 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Documentación End-to-End — TerpelPoC-TRAE
 
-# Getting Started
+Repositorio de PoC para notificaciones de transferencia y centro de notificaciones (Inbox). Arquitectura híbrida React Native (Android/iOS) + Spring Boot (`sms-service`). Implementa HU-01 (push/SMS transaccional) y HU-02 (Inbox con paginación y "No leído").
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+## Visión General
+- Confianza del usuario mediante confirmación inmediata de transacciones
+- Recuperación de mensajes en Inbox con deep links seguros
+- Base para orquestación futura (Marketing Cloud)
 
-## Step 1: Start the Metro Server
-
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
-
-To start Metro, run the following command from the _root_ of your React Native project:
-
-```bash
-# using npm
-npm start
-
-# OR using Yarn
-yarn start
+## Arquitectura
+```mermaid
+flowchart TD
+  A[App React Native] --> B[APIGee / Gateway]
+  B --> C[Orquestador de Notificaciones (futuro)]
+  C --> D[Marketing Cloud]
+  D --> E[FCM/APNs]
+  E --> A
+  C --> F[In-App Inbox]
+  B --> G[Microservicio sms-service]
+  G --> H[Twilio (SMS)]
+  G --> I[Historial Inbox]
+  subgraph Backend
+    G
+  end
+  subgraph Proveedores
+    H
+    D
+    E
+  end
 ```
 
-## Step 2: Start your Application
-
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
-```bash
-# using npm
-npm run android
-
-# OR using Yarn
-yarn android
+## HU-01: Confirmación de Recepción (Flujo)
+```mermaid
+sequenceDiagram
+  participant U as Usuario
+  participant App as App RN
+  participant BE as Backend sms-service
+  participant BC as Blockchain
+  participant MC as Marketing Cloud
+  participant FCM as FCM/APNs
+  participant SMS as Twilio
+  U->>App: Ejecuta transferencia
+  App->>BE: Solicitud transferencia (token)
+  BE->>BC: Ejecuta operación
+  BC-->>BE: Estado definitivo (Aceptado/Rechazado)
+  alt Aceptado
+    BE->>MC: Orquestar push (stub)
+    MC->>FCM: Entrega push
+    FCM-->>App: Notificación "Recibiste $X de [Nombre]"
+    BE->>SMS: Fallback SMS
+  else Rechazado
+    App-->>U: Feedback en app (alerta)
+  end
+  App-->>U: Indicador actividad hasta resolución
 ```
 
-### For iOS
-
-```bash
-# using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+## HU-02: Historial de Mensajes (Flujo)
+```mermaid
+sequenceDiagram
+  participant App as App RN
+  participant BE as Backend sms-service
+  App->>BE: GET /api/inbox/history?cursor&limit
+  BE-->>App: Página {items, nextCursor}
+  App->>App: merge + persistencia local (Keychain)
+  App->>BE: POST /api/inbox/read/{id}
+  App->>App: marcar leído (UI • punto rojo)
+  App->>App: openSecureDeeplink(terpel://promo|alert/...)
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## API Backend
+- `POST /api/notify/transfer` → 200 solo si `status="Aceptado"`
+- `POST /api/sms/transfer` → 200 solo si `status="Aceptado"`
+- `POST /api/sms/payment`, `POST /api/sms/security`
+- `GET /api/inbox/history?limit=20&cursor=<id>`
+- `POST /api/inbox/read/{id}`
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+## Frontend (Ubicaciones Clave)
+- `src/screens/MiBolsillo.tsx`: indicador "Procesando", bifurcación Aceptado/Rechazado, envío push/SMS
+- `src/screens/InboxScreen.tsx`: FlatList cronológica, "No leído", infinite scroll, deep links
+- `src/services/inbox.ts`: fetch/merge/persistencia, `openSecureDeeplink`
+- `src/services/sms.ts`: llamadas a `notify/sms`
 
-## Step 3: Modifying your App
+## Configuración
+- Twilio: `twilio.accountSid`, `twilio.authToken`, `twilio.fromNumber` (no subir secretos)
+- Base URLs RN: Android `http://10.0.2.2:8080`, iOS `http://localhost:8080`
+- Si Twilio no está configurado, el backend evita llamar API (entorno de prueba)
 
-Now that you have successfully run the app, let's modify it.
+## Pruebas
+- Backend (JUnit/Maven): `mvn -q -f backend/sms-service/pom.xml test`
+- Frontend Unit (Jest): `npm test` (requiere instalación de dependencias)
+- Lint: `npm run lint`
+- E2E (Appium/WebdriverIO):
+  - Android: `npm run e2e:android`
+  - iOS: `npm run e2e:ios`
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Seguridad
+- Validación de deep links (`terpel://promo|alert/<id>`)
+- Sin exposición de credenciales en repositorio
+- Autenticación por token vía gateway (pendiente de integración)
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+## KPIs
+- Entrega push/SMS promedio < 5 s, éxito > 98%
+- CTR deeplinks transaccionales > 35%
+- -30% tickets "¿pasó mi pago?"
 
-## Congratulations! :tada:
+## Rama de trabajo
+- `feature/notificaciones-transferencia` con pruebas backend en verde
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
