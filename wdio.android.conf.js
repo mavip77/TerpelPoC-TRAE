@@ -3,6 +3,13 @@ const fs = require('fs');
 const path = require('path');
 const {driver, browser} = require('@wdio/globals');
 const {Buffer} = require('buffer');
+function fmt(now = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}:${p(
+    now.getHours(),
+  )}.${p(now.getMinutes())}.${p(now.getSeconds())}`;
+}
+const RUN_TS = process.env.RUN_TS || fmt();
 
 exports.config = {
   runner: 'local',
@@ -27,7 +34,7 @@ exports.config = {
     [
       'allure',
       {
-        outputDir: './reports/allure/android',
+        outputDir: `./reports/allure/android-${RUN_TS}`,
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false,
       },
@@ -45,11 +52,12 @@ exports.config = {
   },
   afterTest: async function (test, context, {error, result, duration, passed}) {
     try {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${
+      const dir = `./reports/screenshots/android/${RUN_TS}`;
+      fs.mkdirSync(dir, {recursive: true});
+      const name = `${RUN_TS}_${test.title.replace(/\s+/g, '_')}_${
         passed ? 'passed' : 'failed'
       }.png`;
-      const file = `./reports/screenshots/android/${name}`;
-      fs.mkdirSync('./reports/screenshots/android', {recursive: true});
+      const file = `${dir}/${name}`;
       await browser.saveScreenshot(file);
       try {
         const allure = require('@wdio/allure-reporter').default;
@@ -60,11 +68,11 @@ exports.config = {
     try {
       const b64 = await driver.stopRecordingScreen();
       if (b64) {
-        const dir = path.join('reports', 'videos', 'android');
-        fs.mkdirSync(dir, {recursive: true});
+        const vdir = path.join('reports', 'videos', 'android', RUN_TS);
+        fs.mkdirSync(vdir, {recursive: true});
         const file = path.join(
-          dir,
-          `${Date.now()}_${test.title.replace(/\s+/g, '_')}.mp4`,
+          vdir,
+          `${RUN_TS}_${test.title.replace(/\s+/g, '_')}.mp4`,
         );
         fs.writeFileSync(file, Buffer.from(b64, 'base64'));
         try {

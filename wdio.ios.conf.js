@@ -3,17 +3,25 @@ const fs = require('fs');
 const path = require('path');
 const {driver, browser} = require('@wdio/globals');
 const {Buffer} = require('buffer');
+function fmt(now = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}:${p(
+    now.getHours(),
+  )}.${p(now.getMinutes())}.${p(now.getSeconds())}`;
+}
+const RUN_TS = process.env.RUN_TS || fmt();
 
 exports.config = {
   runner: 'local',
   specs: ['./tests/e2e/**/*.ios.spec.js'],
   maxInstances: 1,
+  hostname: process.env.APPIUM_HOST || '127.0.0.1',
+  port: Number(process.env.APPIUM_PORT || 4723),
+  path: process.env.APPIUM_BASE_PATH || '/',
   capabilities: [
     Object.assign({}, caps.ios, {
       'appium:deviceName':
         process.env.IOS_DEVICE_NAME || caps.ios['appium:deviceName'],
-      'appium:platformVersion':
-        process.env.IOS_PLATFORM_VERSION || caps.ios['appium:platformVersion'],
       'appium:app': process.env.APPIUM_APP_IOS || caps.ios['appium:app'],
       'appium:udid': process.env.IOS_UDID || caps.ios['appium:udid'],
     }),
@@ -25,7 +33,7 @@ exports.config = {
     [
       'allure',
       {
-        outputDir: './reports/allure/ios',
+        outputDir: `./reports/allure/ios-${RUN_TS}`,
         disableWebdriverStepsReporting: true,
         disableWebdriverScreenshotsReporting: false,
       },
@@ -35,17 +43,20 @@ exports.config = {
   beforeTest: async function () {
     try {
       await driver.startRecordingScreen({
+        videoSize: '720x1280',
         timeLimit: '180s',
+        bitRate: 2000000,
       });
     } catch {}
   },
-  afterTest: async function (test, context, {passed}) {
+  afterTest: async function (test, context, {error, result, duration, passed}) {
     try {
-      const name = `${Date.now()}_${test.title.replace(/\s+/g, '_')}_${
+      const dir = `./reports/screenshots/ios/${RUN_TS}`;
+      fs.mkdirSync(dir, {recursive: true});
+      const name = `${RUN_TS}_${test.title.replace(/\s+/g, '_')}_${
         passed ? 'passed' : 'failed'
       }.png`;
-      const file = `./reports/screenshots/ios/${name}`;
-      fs.mkdirSync('./reports/screenshots/ios', {recursive: true});
+      const file = `${dir}/${name}`;
       await browser.saveScreenshot(file);
       try {
         const allure = require('@wdio/allure-reporter').default;
@@ -56,11 +67,11 @@ exports.config = {
     try {
       const b64 = await driver.stopRecordingScreen();
       if (b64) {
-        const dir = path.join('reports', 'videos', 'ios');
-        fs.mkdirSync(dir, {recursive: true});
+        const vdir = path.join('reports', 'videos', 'ios', RUN_TS);
+        fs.mkdirSync(vdir, {recursive: true});
         const file = path.join(
-          dir,
-          `${Date.now()}_${test.title.replace(/\s+/g, '_')}.mp4`,
+          vdir,
+          `${RUN_TS}_${test.title.replace(/\s+/g, '_')}.mp4`,
         );
         fs.writeFileSync(file, Buffer.from(b64, 'base64'));
         try {

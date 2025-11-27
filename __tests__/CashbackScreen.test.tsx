@@ -8,6 +8,7 @@ import CashbackScreen, {
   expireBuckets,
   getPreExpiryAlerts,
 } from '../src/screens/CashbackScreen';
+jest.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');
 
 describe('CashbackScreen', () => {
   it('muestra saldos separados y reglas', () => {

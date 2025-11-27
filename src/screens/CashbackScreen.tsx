@@ -1,5 +1,11 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {COLORS} from '../constants/HomeConstants';
 
@@ -45,7 +51,12 @@ export function deductFromBuckets(buckets: Bucket[], amount: number): Bucket[] {
   return buckets.map(b => byKey.get(`${b.campaign}-${b.vence}`) || b);
 }
 
-export type RedemptionAudit = {id: string; tipo: string; monto: number; fecha: string};
+export type RedemptionAudit = {
+  id: string;
+  tipo: string;
+  monto: number;
+  fecha: string;
+};
 export type RedemptionResult = {
   walletBalance: number;
   buckets: Bucket[];
@@ -65,14 +76,32 @@ export function redeemCashback(
   now: Date,
 ): RedemptionResult {
   if (!isAnyBucketValid(buckets, now)) {
-    return {walletBalance, buckets, pointsBalance, error: 'Vencido', audit: null};
+    return {
+      walletBalance,
+      buckets,
+      pointsBalance,
+      error: 'Vencido',
+      audit: null,
+    };
   }
   const total = computeAvailableCashback(buckets, now);
   if (amount <= 0 || amount > total) {
-    return {walletBalance, buckets, pointsBalance, error: 'Monto inválido', audit: null};
+    return {
+      walletBalance,
+      buckets,
+      pointsBalance,
+      error: 'Monto inválido',
+      audit: null,
+    };
   }
   if (processedIds.has(redemptionId)) {
-    return {walletBalance, buckets, pointsBalance, error: 'Idempotente', audit: null};
+    return {
+      walletBalance,
+      buckets,
+      pointsBalance,
+      error: 'Idempotente',
+      audit: null,
+    };
   }
   if (amount < MIN_BLOCKCHAIN_AMOUNT) {
     const nb = deductFromBuckets(buckets, amount);
@@ -82,7 +111,12 @@ export function redeemCashback(
       buckets: nb,
       pointsBalance: np,
       outcome: 'points',
-      audit: {id: redemptionId, tipo: 'cashback->points', monto: amount, fecha: now.toISOString()},
+      audit: {
+        id: redemptionId,
+        tipo: 'cashback->points',
+        monto: amount,
+        fecha: now.toISOString(),
+      },
     };
   }
   const nw = walletBalance + amount;
@@ -92,7 +126,12 @@ export function redeemCashback(
     buckets: nb,
     pointsBalance,
     outcome: 'wallet',
-    audit: {id: redemptionId, tipo: 'cashback->wallet', monto: amount, fecha: now.toISOString()},
+    audit: {
+      id: redemptionId,
+      tipo: 'cashback->wallet',
+      monto: amount,
+      fecha: now.toISOString(),
+    },
   };
 }
 
@@ -103,7 +142,13 @@ export function redeemPoints(
   now: Date,
 ): RedemptionResult {
   if (pointsBalance <= 0) {
-    return {walletBalance, buckets: [], pointsBalance, error: 'Sin puntos', audit: null};
+    return {
+      walletBalance,
+      buckets: [],
+      pointsBalance,
+      error: 'Sin puntos',
+      audit: null,
+    };
   }
   const nw = walletBalance + pointsBalance;
   return {
@@ -111,7 +156,12 @@ export function redeemPoints(
     buckets: [],
     pointsBalance: 0,
     outcome: 'wallet',
-    audit: {id: redemptionId, tipo: 'points->wallet', monto: pointsBalance, fecha: now.toISOString()},
+    audit: {
+      id: redemptionId,
+      tipo: 'points->wallet',
+      monto: pointsBalance,
+      fecha: now.toISOString(),
+    },
   };
 }
 
@@ -153,11 +203,13 @@ export function expireBuckets(
   return {buckets: out, expiredAudits};
 }
 
-export default function CashbackScreen(): React.JSX.Element {
+type Props = {navigation?: any};
+
+export default function CashbackScreen({navigation}: Props): React.JSX.Element {
   const [walletBalance, setWalletBalance] = useState<number>(8100);
   const [buckets, setBuckets] = useState<Bucket[]>([
-    {campaign: 'Bienvenida', amount: 10000, vence: '2025-12-31'},
-    {campaign: 'Global', amount: 8500, vence: '2026-03-31'},
+    {campaign: 'Bienvenida', amount: 12000, vence: '2025-12-31'},
+    {campaign: 'Global', amount: 9000, vence: '2026-03-31'},
   ]);
   const [amount, setAmount] = useState<string>('');
   const [pointsBalance, setPointsBalance] = useState<number>(0);
@@ -165,9 +217,15 @@ export default function CashbackScreen(): React.JSX.Element {
   const [audit, setAudit] = useState<RedemptionAudit[]>([]);
   const processedIds = useMemo(() => new Set<string>(), []);
 
-  const totalCashback = useMemo(() => computeAvailableCashback(buckets, new Date()), [buckets]);
+  const totalCashback = useMemo(
+    () => computeAvailableCashback(buckets, new Date()),
+    [buckets],
+  );
 
-  const alerts = useMemo(() => getPreExpiryAlerts(buckets, new Date(), 14), [buckets]);
+  const alerts = useMemo(
+    () => getPreExpiryAlerts(buckets, new Date(), 14),
+    [buckets],
+  );
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -183,29 +241,94 @@ export default function CashbackScreen(): React.JSX.Element {
   }, [buckets]);
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: COLORS.grayBg}} contentContainerStyle={{paddingBottom: 24}}>
-      <View style={{backgroundColor: COLORS.red, padding: 16, borderBottomLeftRadius: 12, borderBottomRightRadius: 12}}>
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
-          <MaterialCommunityIcons name="ticket-percent" size={20} color={COLORS.white} />
-          <Text style={{color: COLORS.white, fontWeight: '700'}}>Cashback</Text>
+    <ScrollView
+      style={{flex: 1, backgroundColor: COLORS.grayBg}}
+      contentContainerStyle={{paddingBottom: 24}}>
+      <View
+        style={{
+          backgroundColor: COLORS.red,
+          padding: 16,
+          borderBottomLeftRadius: 12,
+          borderBottomRightRadius: 12,
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+          <TouchableOpacity
+            accessibilityLabel="cashback-back"
+            testID="cashback-back"
+            onPress={() => navigation?.goBack?.()}
+            style={{padding: 4}}>
+            <MaterialCommunityIcons
+              name="chevron-left"
+              size={20}
+              color={COLORS.white}
+            />
+          </TouchableOpacity>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 6}}>
+            <MaterialCommunityIcons
+              name="ticket-percent"
+              size={20}
+              color={COLORS.white}
+            />
+            <Text style={{color: COLORS.white, fontWeight: '700'}}>
+              Cashback
+            </Text>
+          </View>
+          <View style={{width: 24}} />
         </View>
-        <Text style={{color: COLORS.white, marginTop: 8}}>Consulta y redime tu cashback</Text>
+        <Text style={{color: COLORS.white, marginTop: 8}}>
+          Consulta y redime tu cashback
+        </Text>
       </View>
 
-      <View style={{backgroundColor: COLORS.white, margin: 12, borderRadius: 12, padding: 12}}>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          margin: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
         <Text style={{color: COLORS.mid}}>Saldo del bolsillo</Text>
-        <Text style={{color: COLORS.red, fontSize: 22, fontWeight: '700'}}>$ {walletBalance.toLocaleString()}</Text>
+        <Text style={{color: COLORS.red, fontSize: 22, fontWeight: '700'}}>
+          $ {walletBalance.toLocaleString()}
+        </Text>
       </View>
 
-      <View style={{backgroundColor: COLORS.white, marginHorizontal: 12, borderRadius: 12, padding: 12}}>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          marginHorizontal: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
         <Text style={{color: COLORS.mid}}>Saldo de cashback</Text>
-        <Text style={{color: COLORS.green, fontSize: 22, fontWeight: '700'}}>$ {totalCashback.toLocaleString()}</Text>
+        <Text style={{color: COLORS.green, fontSize: 22, fontWeight: '700'}}>
+          $ {totalCashback.toLocaleString()}
+        </Text>
       </View>
 
-      <View style={{backgroundColor: COLORS.white, margin: 12, borderRadius: 12, padding: 12}}>
-        <Text style={{color: COLORS.dark, fontWeight: '700'}}>Reglas y vigencias</Text>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          margin: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
+        <Text style={{color: COLORS.dark, fontWeight: '700'}}>
+          Reglas y vigencias
+        </Text>
         {buckets.map((b, i) => (
-          <View key={`${b.campaign}-${i}`} style={{paddingVertical: 6, borderBottomWidth: 0.5, borderColor: '#E5E7EB'}}>
+          <View
+            key={`${b.campaign}-${i}`}
+            style={{
+              paddingVertical: 6,
+              borderBottomWidth: 0.5,
+              borderColor: '#E5E7EB',
+            }}>
             <Text style={{color: COLORS.dark, fontWeight: '600'}}>
               {b.campaign} • $ {b.amount.toLocaleString()}
             </Text>
@@ -214,8 +337,16 @@ export default function CashbackScreen(): React.JSX.Element {
         ))}
       </View>
 
-      <View style={{backgroundColor: COLORS.white, marginHorizontal: 12, borderRadius: 12, padding: 12}}>
-        <Text style={{color: COLORS.dark, fontWeight: '700', marginBottom: 8}}>Redimir</Text>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          marginHorizontal: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
+        <Text style={{color: COLORS.dark, fontWeight: '700', marginBottom: 8}}>
+          Redimir
+        </Text>
         <TextInput
           value={amount}
           onChangeText={t => setAmount(t.replace(/[^0-9]/g, ''))}
@@ -263,10 +394,15 @@ export default function CashbackScreen(): React.JSX.Element {
               setAudit(prev => [res.audit!, ...prev]);
               processedIds.add(res.audit.id);
             }
-            setMessage(res.outcome === 'wallet' ? 'Redimido al bolsillo' : 'Convertido a puntos');
-          }}
-        >
-          <Text style={{color: COLORS.white, fontWeight: '700'}}>Redimir ahora</Text>
+            setMessage(
+              res.outcome === 'wallet'
+                ? 'Redimido al bolsillo'
+                : 'Convertido a puntos',
+            );
+          }}>
+          <Text style={{color: COLORS.white, fontWeight: '700'}}>
+            Redimir ahora
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={{
@@ -292,9 +428,10 @@ export default function CashbackScreen(): React.JSX.Element {
               processedIds.add(res.audit.id);
             }
             setMessage('Puntos redimidos al bolsillo');
-          }}
-        >
-          <Text style={{color: COLORS.white, fontWeight: '700'}}>Redimir puntos</Text>
+          }}>
+          <Text style={{color: COLORS.white, fontWeight: '700'}}>
+            Redimir puntos
+          </Text>
         </TouchableOpacity>
         {!!message && (
           <View style={{marginTop: 8}}>
@@ -303,25 +440,61 @@ export default function CashbackScreen(): React.JSX.Element {
         )}
       </View>
 
-      <View style={{backgroundColor: COLORS.white, margin: 12, borderRadius: 12, padding: 12}}>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          margin: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
         <Text style={{color: COLORS.dark, fontWeight: '700'}}>Auditoría</Text>
         {audit.map(a => (
-          <View key={a.id} style={{paddingVertical: 6, borderBottomWidth: 0.5, borderColor: '#E5E7EB'}}>
-            <Text style={{color: COLORS.dark, fontWeight: '600'}}>{a.tipo}</Text>
-            <Text style={{color: COLORS.mid}}>ID: {a.id} • {a.fecha} • $ {a.monto.toLocaleString()}</Text>
+          <View
+            key={a.id}
+            style={{
+              paddingVertical: 6,
+              borderBottomWidth: 0.5,
+              borderColor: '#E5E7EB',
+            }}>
+            <Text style={{color: COLORS.dark, fontWeight: '600'}}>
+              {a.tipo}
+            </Text>
+            <Text style={{color: COLORS.mid}}>
+              ID: {a.id} • {a.fecha} • $ {a.monto.toLocaleString()}
+            </Text>
           </View>
         ))}
       </View>
 
-      <View style={{backgroundColor: COLORS.white, marginHorizontal: 12, borderRadius: 12, padding: 12}}>
-        <Text style={{color: COLORS.dark, fontWeight: '700'}}>Alertas de vencimiento</Text>
+      <View
+        style={{
+          backgroundColor: COLORS.white,
+          marginHorizontal: 12,
+          borderRadius: 12,
+          padding: 12,
+        }}>
+        <Text style={{color: COLORS.dark, fontWeight: '700'}}>
+          Alertas de vencimiento
+        </Text>
         {alerts.length === 0 ? (
-          <Text style={{color: COLORS.mid, marginTop: 6}}>Sin alertas próximas</Text>
+          <Text style={{color: COLORS.mid, marginTop: 6}}>
+            Sin alertas próximas
+          </Text>
         ) : (
           alerts.map(al => (
-            <View key={`${al.campaign}-${al.vence}`} style={{paddingVertical: 6, borderBottomWidth: 0.5, borderColor: '#E5E7EB'}}>
-              <Text style={{color: COLORS.dark, fontWeight: '600'}}>{al.campaign}</Text>
-              <Text style={{color: COLORS.mid}}>Vence en {al.daysLeft} días • {al.vence}</Text>
+            <View
+              key={`${al.campaign}-${al.vence}`}
+              style={{
+                paddingVertical: 6,
+                borderBottomWidth: 0.5,
+                borderColor: '#E5E7EB',
+              }}>
+              <Text style={{color: COLORS.dark, fontWeight: '600'}}>
+                {al.campaign}
+              </Text>
+              <Text style={{color: COLORS.mid}}>
+                Vence en {al.daysLeft} días • {al.vence}
+              </Text>
             </View>
           ))
         )}

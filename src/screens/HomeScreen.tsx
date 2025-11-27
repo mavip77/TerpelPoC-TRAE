@@ -164,6 +164,8 @@ export default function HomeScreen({
           <TouchableOpacity
             style={styles.card}
             activeOpacity={0.9}
+            accessibilityLabel="open-cashback"
+            testID="open-cashback"
             onPress={() => navigation?.navigate?.('Cashback')}>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons
@@ -173,7 +175,9 @@ export default function HomeScreen({
               />
               <Text style={styles.cardTitle}>Cashback</Text>
             </View>
-            <Text style={[styles.cardValue, {color: COLORS.green}]}>$ 18.500</Text>
+            <Text style={[styles.cardValue, {color: COLORS.green}]}>
+              $ 18.500
+            </Text>
             <View style={styles.cardFooter}>
               <Text style={styles.cardLink}>Ver más</Text>
               <MaterialCommunityIcons

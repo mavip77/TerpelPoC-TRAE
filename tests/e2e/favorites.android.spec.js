@@ -1,6 +1,19 @@
 const {$, driver} = require('@wdio/globals');
+const allure = require('@wdio/allure-reporter').default;
+const pkg = require('../../package.json');
 
 describe('Favoritos Android - CRUD y transferir', () => {
+  before(() => {
+    allure.addFeature('Mi Bolsillo');
+    allure.addStory('Favoritos - CRUD y Transferir');
+    allure.addSeverity('critical');
+    allure.addEnvironment('platform', 'Android');
+    allure.addEnvironment('appVersion', pkg.version);
+    allure.addEnvironment('reactNative', pkg.dependencies['react-native']);
+    allure.addDescription(
+      'Validación end-to-end del flujo de favoritos en Android: crear, buscar, editar, eliminar y transferir.',
+    );
+  });
   beforeEach(async () => {
     const pkg = 'com.terpelpoc';
     try {

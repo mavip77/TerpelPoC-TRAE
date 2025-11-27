@@ -1,5 +1,10 @@
 const fs = require('fs');
 const path = require('path');
+function fmt(now = new Date()) {
+  const p = n => String(n).padStart(2, '0');
+  return `${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}:${p(now.getHours())}.${p(now.getMinutes())}.${p(now.getSeconds())}`;
+}
+const RUN_TS = process.env.RUN_TS || fmt();
 
 function readJsonReports(dir) {
   if (!fs.existsSync(dir)) return [];
@@ -55,13 +60,13 @@ function writeTechnicalMD(agg, dir) {
   lines.push('| Spec | Caso | Estado | Duración | Video |');
   lines.push('|---|---|---|---|---|');
   agg.cases.forEach(c => {
-    const vidsDir = path.join('reports', 'videos', 'android');
+    const vidsDir = path.join('reports', 'videos', 'android', RUN_TS);
     let videoCell = 'N/D';
     if (fs.existsSync(vidsDir)) {
       const files = fs.readdirSync(vidsDir);
       const namePart = (c.title || '').replace(/\s+/g, '_');
       const match = files.find(f => f.includes(namePart));
-      if (match) videoCell = `[${match}](../videos/android/${match})`;
+      if (match) videoCell = `[${match}](../videos/android/${RUN_TS}/${match})`;
     }
     lines.push(
       `| ${c.spec || 'N/D'} | ${c.title} | ${
@@ -69,7 +74,7 @@ function writeTechnicalMD(agg, dir) {
       } | ${formatDuration(c.duration)} | ${videoCell} |`,
     );
   });
-  const out = path.join('reports', `e2e_android_technical_${Date.now()}.md`);
+  const out = path.join('reports', `e2e_android_technical_${RUN_TS}.md`);
   fs.mkdirSync('reports', {recursive: true});
   fs.writeFileSync(out, lines.join('\n'));
   return out;
@@ -95,18 +100,18 @@ function writeExecutiveMD(agg, dir) {
   lines.push('## Recomendaciones');
   lines.push('- Integrar limpieza ADB previa a ejecución.');
   lines.push('- Mantener tiempos de espera elevados en arranque.');
-  const out = path.join('reports', `e2e_android_executive_${Date.now()}.md`);
+  const out = path.join('reports', `e2e_android_executive_${RUN_TS}.md`);
   fs.mkdirSync('reports', {recursive: true});
   fs.writeFileSync(out, lines.join('\n'));
   return out;
 }
 
 function main() {
-  const dir = path.join('reports', 'wdio-json', 'android');
+  const dir = path.join('reports', 'wdio-json', 'android', RUN_TS);
   let results = readJsonReports(dir);
   let agg = aggregate(results);
   if (agg.tests === 0) {
-    const logPath = path.join('reports', 'wdio-android.log');
+    const logPath = path.join('reports', `wdio-android-${RUN_TS}.log`);
     if (fs.existsSync(logPath)) {
       const log = fs.readFileSync(logPath, 'utf8');
       const caseLines = Array.from(log.matchAll(/\s+\u2713\s([^\n]+)/g)).map(

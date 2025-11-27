@@ -42,13 +42,22 @@ export default function MiBolsillo({navigation}: Props) {
   const [detailOpen, setDetailOpen] = useState<boolean>(false);
   const [selectedTx, setSelectedTx] = useState<any | null>(null);
   const [recipientName, setRecipientName] = useState<string>('');
+  const [recipientPhotoUri, setRecipientPhotoUri] = useState<string>('');
 
-  type Favorito = {name: string; docType: 'CC' | 'CE'; docNumber: string};
+  type Favorito = {
+    name: string;
+    docType: 'CC' | 'CE';
+    docNumber: string;
+    photoUri?: string;
+  };
   const [favoritos, setFavoritos] = useState<Favorito[]>([]);
   const [favListOpen, setFavListOpen] = useState<boolean>(false);
   const [favConfirmOpen, setFavConfirmOpen] = useState<boolean>(false);
   const [selectedFav, setSelectedFav] = useState<Favorito | null>(null);
   const [favAmount, setFavAmount] = useState<string>('');
+  const [favSearch, setFavSearch] = useState<string>('');
+  const [favEditOpen, setFavEditOpen] = useState<boolean>(false);
+  const [favEdit, setFavEdit] = useState<Favorito | null>(null);
 
   const montoNum = useMemo(() => {
     const n = Number(String(monto).replace(/[^0-9]/g, ''));
@@ -87,6 +96,7 @@ export default function MiBolsillo({navigation}: Props) {
       name: recipientName.trim(),
       docType: docType!,
       docNumber: docNumber,
+      photoUri: recipientPhotoUri.trim() || undefined,
     };
     Alert.alert(
       'Transferencia enviada',
@@ -120,6 +130,7 @@ export default function MiBolsillo({navigation}: Props) {
                           name: snapshot.name || f.name,
                           docType: f.docType,
                           docNumber: f.docNumber,
+                          photoUri: snapshot.photoUri ?? f.photoUri,
                         }
                       : f,
                   )
@@ -129,6 +140,7 @@ export default function MiBolsillo({navigation}: Props) {
                       name: snapshot.name || 'Sin nombre',
                       docType: snapshot.docType,
                       docNumber: snapshot.docNumber,
+                      photoUri: snapshot.photoUri,
                     },
                   ];
               await saveFavoritos(next);
@@ -147,6 +159,7 @@ export default function MiBolsillo({navigation}: Props) {
     setDocType(undefined);
     setDocNumber('');
     setRecipientName('');
+    setRecipientPhotoUri('');
     setMonto('');
   };
 
@@ -277,7 +290,9 @@ export default function MiBolsillo({navigation}: Props) {
               styles.tabBtn,
               tab === 'transferir' ? styles.tabActive : null,
             ]}
-            onPress={() => setTab('transferir')}>
+            onPress={() => setTab('transferir')}
+            accessibilityLabel="tab-transferir"
+            testID="tab-transferir">
             <Text
               style={[
                 styles.tabText,
@@ -315,6 +330,18 @@ export default function MiBolsillo({navigation}: Props) {
               value={recipientName}
               onChangeText={t => setRecipientName(t)}
               placeholder="Ingresa el nombre"
+              accessibilityLabel="transfer-name-input"
+              testID="transfer-name-input"
+            />
+
+            <Text style={styles.label}>Foto (URL opcional)</Text>
+            <TextInput
+              style={styles.input}
+              value={recipientPhotoUri}
+              onChangeText={t => setRecipientPhotoUri(t)}
+              placeholder="https://..."
+              accessibilityLabel="transfer-photo-input"
+              testID="transfer-photo-input"
             />
 
             <Text style={styles.label}>Tipo de documento</Text>
@@ -324,7 +351,9 @@ export default function MiBolsillo({navigation}: Props) {
                   styles.comboItem,
                   docType === 'CC' ? styles.comboActive : null,
                 ]}
-                onPress={() => setDocType('CC')}>
+                onPress={() => setDocType('CC')}
+                accessibilityLabel="doc-type-CC"
+                testID="doc-type-CC">
                 <Text
                   style={[
                     styles.comboText,
@@ -338,7 +367,9 @@ export default function MiBolsillo({navigation}: Props) {
                   styles.comboItem,
                   docType === 'CE' ? styles.comboActive : null,
                 ]}
-                onPress={() => setDocType('CE')}>
+                onPress={() => setDocType('CE')}
+                accessibilityLabel="doc-type-CE"
+                testID="doc-type-CE">
                 <Text
                   style={[
                     styles.comboText,
@@ -357,6 +388,8 @@ export default function MiBolsillo({navigation}: Props) {
               keyboardType="number-pad"
               maxLength={12}
               placeholder="Ingresa el documento"
+              accessibilityLabel="transfer-doc-input"
+              testID="transfer-doc-input"
             />
             <Text
               style={[
@@ -373,6 +406,8 @@ export default function MiBolsillo({navigation}: Props) {
               onChangeText={t => setMonto(t.replace(/[^0-9]/g, ''))}
               keyboardType="number-pad"
               placeholder="$ 0"
+              accessibilityLabel="transfer-amount-input"
+              testID="transfer-amount-input"
             />
             <Text style={styles.hint}>Debe ser menor al saldo disponible</Text>
 
@@ -382,7 +417,9 @@ export default function MiBolsillo({navigation}: Props) {
               style={[
                 styles.primaryBtn,
                 !canSend ? styles.primaryBtnDisabled : null,
-              ]}>
+              ]}
+              accessibilityLabel="transfer-send"
+              testID="transfer-send">
               <Text style={styles.primaryBtnText}>
                 Enviar para realizar la transferencia
               </Text>
@@ -394,7 +431,9 @@ export default function MiBolsillo({navigation}: Props) {
               style={[
                 styles.secondaryBtn,
                 favoritos.length === 0 ? styles.secondaryBtnDisabled : null,
-              ]}>
+              ]}
+              accessibilityLabel="open-fav-list"
+              testID="open-fav-list">
               <MaterialCommunityIcons
                 name="star"
                 size={18}
@@ -635,6 +674,68 @@ export default function MiBolsillo({navigation}: Props) {
         </Modal>
 
         <Modal
+          isVisible={favEditOpen}
+          style={styles.modal}
+          onBackdropPress={() => setFavEditOpen(false)}
+          swipeDirection="down"
+          onSwipeComplete={() => setFavEditOpen(false)}
+          backdropOpacity={0.5}
+          animationIn="slideInUp"
+          animationOut="slideOutDown">
+          <View style={styles.sheet}>
+            <View style={styles.sheetHeader}>
+              <Text style={styles.cardTitle}>Editar favorito</Text>
+              <TouchableOpacity onPress={() => setFavEditOpen(false)}>
+                <MaterialCommunityIcons
+                  name="close"
+                  size={20}
+                  color={COLORS.mid}
+                />
+              </TouchableOpacity>
+            </View>
+            {favEdit ? (
+              <>
+                <Text style={styles.label}>Alias</Text>
+                <TextInput
+                  style={styles.input}
+                  value={favEdit.name}
+                  onChangeText={t => setFavEdit({...favEdit, name: t})}
+                  placeholder="Ingresa el alias"
+                  accessibilityLabel="fav-edit-name-input"
+                  testID="fav-edit-name-input"
+                />
+                <Text style={styles.label}>Foto (URL opcional)</Text>
+                <TextInput
+                  style={styles.input}
+                  value={favEdit.photoUri || ''}
+                  onChangeText={t => setFavEdit({...favEdit, photoUri: t})}
+                  placeholder="https://..."
+                />
+                <TouchableOpacity
+                  style={styles.primaryBtn}
+                  accessibilityLabel="fav-save"
+                  testID="fav-save"
+                  onPress={async () => {
+                    if (!favEdit) return;
+                    const next = favoritos.map(f =>
+                      f.docType === favEdit.docType &&
+                      f.docNumber === favEdit.docNumber
+                        ? {...f, name: favEdit.name, photoUri: favEdit.photoUri}
+                        : f,
+                    );
+                    await saveFavoritos(next);
+                    setFavoritos(next);
+                    setFavEditOpen(false);
+                    setFavEdit(null);
+                  }}>
+                  <Text style={styles.primaryBtnText}>Guardar</Text>
+                </TouchableOpacity>
+              </>
+            ) : null}
+          </View>
+        </Modal>
+
+        <Modal
           isVisible={favListOpen}
           style={styles.modal}
           onBackdropPress={() => setFavListOpen(false)}
@@ -657,39 +758,122 @@ export default function MiBolsillo({navigation}: Props) {
             {favoritos.length === 0 ? (
               <Text style={styles.hint}>No tienes favoritos registrados.</Text>
             ) : (
-              <FlatList
-                data={favoritos}
-                keyExtractor={(i, idx) => `${i.docType}-${i.docNumber}-${idx}`}
-                renderItem={({item}) => (
-                  <TouchableOpacity
-                    style={styles.favItem}
-                    onPress={() => {
-                      setSelectedFav(item);
-                      setFavAmount('');
-                      setFavListOpen(false);
-                      setFavConfirmOpen(true);
-                    }}>
-                    <View style={styles.favIcon}>
-                      <MaterialCommunityIcons
-                        name="account"
-                        size={18}
-                        color={COLORS.mid}
-                      />
-                    </View>
-                    <View style={{flex: 1, marginLeft: 10}}>
-                      <Text style={styles.txTitle}>{item.name}</Text>
-                      <Text style={styles.txSub}>
-                        {item.docType}-{item.docNumber}
-                      </Text>
-                    </View>
-                    <MaterialCommunityIcons
-                      name="chevron-right"
-                      size={20}
-                      color={COLORS.mid}
-                    />
-                  </TouchableOpacity>
-                )}
-              />
+              <>
+                <Text style={[styles.label, {marginTop: 0}]}>Buscar</Text>
+                <TextInput
+                  style={styles.input}
+                  value={favSearch}
+                  onChangeText={t => setFavSearch(t)}
+                  placeholder="Buscar por nombre o documento"
+                  accessibilityLabel="fav-search"
+                  testID="fav-search"
+                />
+                <FlatList
+                  data={favoritos.filter(f => {
+                    const q = favSearch.trim().toLowerCase();
+                    if (!q) return true;
+                    return (
+                      f.name.toLowerCase().includes(q) ||
+                      `${f.docType}-${f.docNumber}`.toLowerCase().includes(q)
+                    );
+                  })}
+                  keyExtractor={(i, idx) =>
+                    `${i.docType}-${i.docNumber}-${idx}`
+                  }
+                  renderItem={({item}) => (
+                    <TouchableOpacity
+                      style={styles.favItem}
+                      onPress={() => {
+                        setSelectedFav(item);
+                        setFavAmount('');
+                        setFavListOpen(false);
+                        setFavConfirmOpen(true);
+                      }}
+                      accessibilityLabel={`fav-item-${item.docType}-${item.docNumber}`}
+                      testID={`fav-item-${item.docType}-${item.docNumber}`}>
+                      {item.photoUri ? (
+                        <View style={styles.favIcon}>
+                          {(() => {
+                            try {
+                              const FastImage =
+                                require('@d11/react-native-fast-image').default;
+                              return (
+                                <FastImage
+                                  style={{
+                                    width: 24,
+                                    height: 24,
+                                    borderRadius: 12,
+                                  }}
+                                  source={{uri: item.photoUri}}
+                                />
+                              );
+                            } catch {
+                              return (
+                                <MaterialCommunityIcons
+                                  name="account"
+                                  size={18}
+                                  color={COLORS.mid}
+                                />
+                              );
+                            }
+                          })()}
+                        </View>
+                      ) : (
+                        <View style={styles.favIcon}>
+                          <MaterialCommunityIcons
+                            name="account"
+                            size={18}
+                            color={COLORS.mid}
+                          />
+                        </View>
+                      )}
+                      <View style={{flex: 1, marginLeft: 10}}>
+                        <Text style={styles.txTitle}>{item.name}</Text>
+                        <Text style={styles.txSub}>
+                          {item.docType}-{item.docNumber}
+                        </Text>
+                      </View>
+                      <View style={{flexDirection: 'row', gap: 8}}>
+                        <TouchableOpacity
+                          accessibilityLabel={`fav-edit-${item.docType}-${item.docNumber}`}
+                          testID={`fav-edit-${item.docType}-${item.docNumber}`}
+                          onPress={() => {
+                            setFavEdit(item);
+                            setFavEditOpen(true);
+                          }}
+                          style={{padding: 4}}>
+                          <MaterialCommunityIcons
+                            name="pencil"
+                            size={18}
+                            color={COLORS.mid}
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          accessibilityLabel={`fav-delete-${item.docType}-${item.docNumber}`}
+                          testID={`fav-delete-${item.docType}-${item.docNumber}`}
+                          onPress={async () => {
+                            const next = favoritos.filter(
+                              f =>
+                                !(
+                                  f.docType === item.docType &&
+                                  f.docNumber === item.docNumber
+                                ),
+                            );
+                            await saveFavoritos(next);
+                            setFavoritos(next);
+                          }}
+                          style={{padding: 4}}>
+                          <MaterialCommunityIcons
+                            name="trash-can"
+                            size={18}
+                            color={COLORS.mid}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                />
+              </>
             )}
           </View>
         </Modal>
@@ -735,6 +919,8 @@ export default function MiBolsillo({navigation}: Props) {
                   onChangeText={t => setFavAmount(t.replace(/[^0-9]/g, ''))}
                   keyboardType="number-pad"
                   placeholder="$ 0"
+                  accessibilityLabel="fav-amount-input"
+                  testID="fav-amount-input"
                 />
                 <TouchableOpacity
                   disabled={
@@ -762,7 +948,9 @@ export default function MiBolsillo({navigation}: Props) {
                       }`,
                     );
                     setTab('transferir');
-                  }}>
+                  }}
+                  accessibilityLabel="fav-confirm"
+                  testID="fav-confirm">
                   <Text style={styles.primaryBtnText}>Confirmar</Text>
                 </TouchableOpacity>
               </>
