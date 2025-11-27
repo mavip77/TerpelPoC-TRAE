@@ -209,23 +209,6 @@ export default function MiBolsillo({navigation}: Props) {
     });
   };
 
-  const addFavorite = async (fav: Favorito) => {
-    const name = fav.name.trim();
-    const doc = String(fav.docNumber).replace(/\D/g, '');
-    const type = fav.docType;
-    if (!name || !doc || (type !== 'CC' && type !== 'CE')) return;
-    const list = await loadFavoritos();
-    const exists = list.some(f => f.docType === type && f.docNumber === doc);
-    const next = exists
-      ? list.map(f =>
-          f.docType === type && f.docNumber === doc
-            ? {name, docType: type, docNumber: doc}
-            : f,
-        )
-      : [{name, docType: type, docNumber: doc}, ...list].slice(0, 50);
-    await saveFavoritos(next);
-    setFavoritos(next);
-  };
 
   const removeFavorite = async (fav: Favorito) => {
     const doc = String(fav.docNumber).replace(/\D/g, '');
@@ -359,7 +342,7 @@ export default function MiBolsillo({navigation}: Props) {
 
             <Text style={styles.label}>Nombre del destinatario</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={recipientName}
               onChangeText={t => setRecipientName(t)}
               placeholder="Ingresa el nombre"
@@ -405,7 +388,7 @@ export default function MiBolsillo({navigation}: Props) {
 
             <Text style={styles.label}>Número de documento</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={docNumber}
               onChangeText={t => setDocNumber(t.replace(/\D/g, ''))}
               keyboardType="number-pad"
@@ -424,7 +407,7 @@ export default function MiBolsillo({navigation}: Props) {
 
             <Text style={styles.label}>Monto a transferir</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={monto}
               onChangeText={t => setMonto(t.replace(/[^0-9]/g, ''))}
               keyboardType="number-pad"
@@ -501,7 +484,7 @@ export default function MiBolsillo({navigation}: Props) {
             </View>
 
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={recarga}
               onChangeText={t => setRecarga(t.replace(/[^0-9]/g, ''))}
               keyboardType="number-pad"
@@ -719,7 +702,7 @@ export default function MiBolsillo({navigation}: Props) {
             <TextInput
               accessibilityLabel="fav-search"
               testID="fav-search"
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={favQuery}
               onChangeText={t => setFavQuery(t)}
               placeholder="Buscar por nombre o documento"
@@ -841,7 +824,7 @@ export default function MiBolsillo({navigation}: Props) {
                   Monto a transferir
                 </Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, styles.inputBlack]}
                   value={favAmount}
                   onChangeText={t => setFavAmount(t.replace(/[^0-9]/g, ''))}
                   keyboardType="number-pad"
@@ -907,7 +890,7 @@ export default function MiBolsillo({navigation}: Props) {
             </View>
             <Text style={styles.label}>Nombre</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, styles.inputBlack]}
               value={editName}
               onChangeText={t => setEditName(t)}
               placeholder="Ingresa el nombre"
@@ -1017,6 +1000,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 8,
   },
+  inputBlack: {color: '#000000'},
   hint: {fontSize: 12, color: COLORS.mid, marginTop: 6},
   hintOk: {color: COLORS.green},
   hintError: {color: COLORS.red},

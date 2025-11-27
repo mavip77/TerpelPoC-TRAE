@@ -32,7 +32,7 @@ describe('OtpModal', () => {
   it('autoverifica con seedCode y cierra cuando onVerify=true', async () => {
     const onClose = jest.fn();
     const onVerify = jest.fn(async () => true);
-    let tree: renderer.ReactTestRenderer;
+    let tree!: renderer.ReactTestRenderer;
     await act(async () => {
       tree = renderer.create(
         <OtpModal
@@ -60,7 +60,7 @@ describe('OtpModal', () => {
   it('autoverifica con seedCode y no cierra cuando onVerify=false', async () => {
     const onClose = jest.fn();
     const onVerify = jest.fn(async () => false);
-    let tree: renderer.ReactTestRenderer;
+    let tree!: renderer.ReactTestRenderer;
     await act(async () => {
       tree = renderer.create(
         <OtpModal

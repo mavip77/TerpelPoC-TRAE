@@ -21,6 +21,7 @@ import MiBolsillo from './src/screens/MiBolsillo';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import OTPVerify from 'react-native-otp-verify';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,22 +37,23 @@ function App(): React.JSX.Element {
         return;
       }
       try {
-        const mod = await import(
-          /* webpackChunkName: "otp-verify" */
-          'react-native-otp-verify'
-        );
         try {
-          const hashes: string[] = await mod.getHash();
+          const hashes: string[] = await OTPVerify.getHash();
           if (hashes && hashes.length > 0) {
             setSignature(hashes[0]);
           }
         } catch {}
-        remove = await mod.startOtpListener((message: string) => {
+        OTPVerify.startOtpListener((message: string) => {
           const match = message.match(/(?:^|\D)(\d{6})(?:\D|$)/);
           if (match && match[1]) {
             setSeedCode(match[1]);
           }
         });
+        remove = () => {
+          try {
+            OTPVerify.removeListener();
+          } catch {}
+        };
       } catch (e) {
         // no-op
       }

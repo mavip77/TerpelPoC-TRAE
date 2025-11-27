@@ -7,7 +7,7 @@ type Bucket = {campaign: string; amount: number; vence: string};
 
 export default function CashbackScreen(): React.JSX.Element {
   const [walletBalance] = useState<number>(8100);
-  const [buckets, setBuckets] = useState<Bucket[]>([
+  const [buckets] = useState<Bucket[]>([
     {campaign: 'Bienvenida', amount: 10000, vence: '2025-12-31'},
     {campaign: 'Global', amount: 8500, vence: '2026-03-31'},
   ]);

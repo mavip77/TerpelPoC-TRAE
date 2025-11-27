@@ -42,65 +42,6 @@ export default function OtpModal({
   const canVerify = code.length === 6 && /^[0-9]{6}$/.test(code) && !loading;
   const autoSubmitRef = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-    setCode('');
-    setLoading(false);
-    setTimer(60);
-  }, [visible]);
-
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-    if (seedCode && /^[0-9]{6}$/.test(seedCode)) {
-      setCode(seedCode);
-      if (autoSubmitRef.current) {
-        clearTimeout(autoSubmitRef.current);
-        autoSubmitRef.current = null;
-      }
-      autoSubmitRef.current = setTimeout(() => {
-        handleVerify();
-      }, 500);
-    }
-  }, [visible, seedCode, handleVerify]);
-
-  useEffect(() => {
-    if (!visible && autoSubmitRef.current) {
-      clearTimeout(autoSubmitRef.current);
-      autoSubmitRef.current = null;
-    }
-  }, [visible]);
-
-  useEffect(() => {
-    if (!visible) {
-      return;
-    }
-    const id = setInterval(() => setTimer(t => (t > 0 ? t - 1 : 0)), 1000);
-    return () => clearInterval(id);
-  }, [visible]);
-
-  const formattedTimer = useMemo(() => {
-    const m = Math.floor(timer / 60);
-    const s = `${timer % 60}`.padStart(2, '0');
-    return `${m}:${s}`;
-  }, [timer]);
-
-  const onComplete = (c: string) => {
-    setCode(c);
-    if (autoSubmitRef.current) {
-      clearTimeout(autoSubmitRef.current);
-      autoSubmitRef.current = null;
-    }
-    if (c && c.length === 6) {
-      autoSubmitRef.current = setTimeout(() => {
-        handleVerify();
-      }, 300);
-    }
-  };
-
   const triggerShake = useCallback(() => {
     if (
       typeof (Animated as any)?.sequence === 'function' &&
@@ -151,6 +92,67 @@ export default function OtpModal({
       triggerShake();
     }
   }, [canVerify, onVerify, onClose, code, triggerShake]);
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    setCode('');
+    setLoading(false);
+    setTimer(60);
+  }, [visible]);
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    if (seedCode && /^[0-9]{6}$/.test(seedCode)) {
+      setCode(seedCode);
+      if (autoSubmitRef.current) {
+        clearTimeout(autoSubmitRef.current);
+        autoSubmitRef.current = null;
+      }
+      autoSubmitRef.current = setTimeout(() => {
+        handleVerify();
+      }, 500);
+    }
+  }, [visible, seedCode, handleVerify]);
+
+  useEffect(() => {
+    if (!visible && autoSubmitRef.current) {
+      clearTimeout(autoSubmitRef.current);
+      autoSubmitRef.current = null;
+    }
+  }, [visible]);
+
+  useEffect(() => {
+    if (!visible) {
+      return;
+    }
+    const id = setInterval(() => setTimer(t => (t > 0 ? t - 1 : 0)), 1000);
+    return () => clearInterval(id);
+  }, [visible]);
+
+  const formattedTimer = useMemo(() => {
+    const m = Math.floor(timer / 60);
+    const s = `${timer % 60}`.padStart(2, '0');
+    return `${m}:${s}`;
+  }, [timer]);
+
+
+  const onComplete = (c: string) => {
+    setCode(c);
+    if (autoSubmitRef.current) {
+      clearTimeout(autoSubmitRef.current);
+      autoSubmitRef.current = null;
+    }
+    if (c && c.length === 6) {
+      autoSubmitRef.current = setTimeout(() => {
+        handleVerify();
+      }, 300);
+    }
+  };
+
 
   const height = Math.floor(Dimensions.get('window').height * 0.78);
 
@@ -346,4 +348,3 @@ const styles = StyleSheet.create({
   },
 });
 
-export {};

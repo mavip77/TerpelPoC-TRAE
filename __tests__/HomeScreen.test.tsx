@@ -138,7 +138,7 @@ describe('HomeScreen', () => {
     const card = cards.find(node => {
       const texts = node.findAllByType(Text);
       return texts.some(t => t.props.children === 'Mi Bolsillo');
-    });
+    })!;
     act(() => {
       card.props.onPress();
     });

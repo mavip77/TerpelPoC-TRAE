@@ -120,4 +120,6 @@ J.mock('react-native-keychain', () => ({
   setGenericPassword: J.fn(async () => undefined),
 }));
 
+J.mock('react-native-vector-icons/MaterialCommunityIcons', () => 'Icon');
+
 global.__DEV__ = true;

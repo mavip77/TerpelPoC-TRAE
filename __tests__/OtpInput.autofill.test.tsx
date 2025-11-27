@@ -31,7 +31,7 @@ describe('OtpInput autofill from seedCode', () => {
     });
 
     const root = component!.root;
-    const inputs = root.findAllByType('TextInput');
+    const inputs = root.findAllByType(require('react-native').TextInput);
     act(() => {
       inputs[0].props.onChangeText('4');
       inputs[1].props.onChangeText('5');

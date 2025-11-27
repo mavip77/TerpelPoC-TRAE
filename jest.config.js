@@ -8,4 +8,5 @@ module.exports = {
     'node_modules/(?!(react-native|@react-native|react-native-modal|@react-navigation|react-native-vector-icons)/)',
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
+  testPathIgnorePatterns: ['<rootDir>/tests/e2e/'],
 };

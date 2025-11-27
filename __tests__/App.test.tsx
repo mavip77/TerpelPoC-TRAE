@@ -45,20 +45,20 @@ jest.mock('@react-navigation/native-stack', () => ({
 jest.mock('react-native-safe-area-context', () => ({
   SafeAreaProvider: ({children}: any) => children,
 }));
-jest.mock('react-native/Libraries/Animated/Animated', () => {
-  const Actual = jest.requireActual('react-native/Libraries/Animated/Animated');
-  return {
-    ...Actual,
-    Value: function (initial) {
-      return {setValue: jest.fn(), __getValue: () => initial} as any;
-    },
-    timing: () => ({
-      start: (cb?: () => void) => {
-        if (cb) cb();
+  jest.mock('react-native/Libraries/Animated/Animated', () => {
+    const Actual = jest.requireActual('react-native/Libraries/Animated/Animated');
+    return {
+      ...Actual,
+      Value: function (initial: any) {
+        return {setValue: jest.fn(), __getValue: () => initial} as any;
       },
-    }),
-  };
-});
+      timing: () => ({
+        start: (cb?: () => void) => {
+          if (cb) cb();
+        },
+      }),
+    };
+  });
 
 it('renders correctly', () => {
   renderer.create(<App />);
