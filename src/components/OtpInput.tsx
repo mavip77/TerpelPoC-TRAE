@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Keyboard,
@@ -36,7 +36,7 @@ export default function OtpInput({
     if (typeof V === 'function') {
       return new V(n);
     }
-    return {setValue: () => {}, __getValue: () => n} as any;
+    return { setValue: () => { }, __getValue: () => n } as any;
   };
   const scales = useRef<Animated.Value[]>(
     Array(otpLength)
@@ -189,7 +189,7 @@ export default function OtpInput({
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.row, {opacity: rowOpacity}]}>
+      <Animated.View style={[styles.row, { opacity: rowOpacity }]}>
         {values.map((val, i) => (
           <Animated.View
             key={i}
@@ -197,7 +197,7 @@ export default function OtpInput({
               styles.box,
               i === focusedIndex || !!values[i] ? styles.boxActive : null,
               i === focusedIndex || !!values[i] ? styles.boxActiveBg : null,
-              {transform: [{scale: scales[i]}]},
+              { transform: [{ scale: scales[i] }] },
             ]}>
             <TextInput
               testID={`otp-${i}`}
@@ -235,12 +235,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
+    gap: 8,
   },
   box: {
-    width: 48,
-    height: 56,
-    borderRadius: 12,
+    width: 38,
+    height: 48,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
@@ -251,8 +251,8 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
-  boxActive: {borderColor: '#E31E24'},
-  boxActiveBg: {backgroundColor: '#FFFFFF'},
+  boxActive: { borderColor: '#E31E24' },
+  boxActiveBg: { backgroundColor: '#FFFFFF' },
   input: {
     fontSize: 24,
     fontWeight: '700',
@@ -265,4 +265,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {};
+export { };

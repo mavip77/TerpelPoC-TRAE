@@ -27,7 +27,7 @@ exports.config = {
       'appium:udid': process.env.ANDROID_UDID || caps.android['appium:udid'],
     }),
   ],
-  services: [['appium', {args: {allowCors: true}}]],
+  services: [],
   framework: 'mocha',
   reporters: [
     'spec',

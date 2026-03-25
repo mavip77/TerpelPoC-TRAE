@@ -1,6 +1,6 @@
 import React from 'react';
-import renderer, {act} from 'react-test-renderer';
-import {} from 'react-native';
+import renderer, { act } from 'react-test-renderer';
+import { } from 'react-native';
 import OtpModal from '../src/components/OtpModal';
 jest.useFakeTimers();
 
@@ -10,20 +10,20 @@ jest.mock(
   () => {
     const React = require('react');
     return React.forwardRef((props: any, ref: any) =>
-      React.createElement('TouchableOpacity', {...props, ref}),
+      React.createElement('TouchableOpacity', { ...props, ref }),
     );
   },
 );
 jest.mock('../src/components/OtpInput', () => {
   const React = require('react');
-  const {useEffect} = React;
-  return ({onComplete, seedCode}: any) => {
+  const { useEffect } = React;
+  return ({ onComplete, seedCode }: any) => {
     useEffect(() => {
       if (seedCode) {
         onComplete?.(String(seedCode));
       }
     }, [seedCode, onComplete]);
-    return React.createElement('OtpInput', {onComplete, seedCode});
+    return React.createElement('OtpInput', { onComplete, seedCode });
   };
 });
 // (solo un mock de OtpInput)
@@ -38,21 +38,21 @@ describe('OtpModal', () => {
         <OtpModal
           visible={true}
           onClose={onClose}
-          seedCode="123456"
+          seedCode="12345678"
           onVerify={onVerify}
         />,
       );
     });
     const otp = (tree as any).root.findByType('OtpInput');
     await act(async () => {
-      otp.props.onComplete('123456');
+      otp.props.onComplete('12345678');
     });
     await act(async () => {
       jest.runOnlyPendingTimers();
       jest.advanceTimersByTime(600);
       await Promise.resolve();
     });
-    expect(onVerify).toHaveBeenCalledWith('123456');
+    expect(onVerify).toHaveBeenCalledWith('12345678');
     expect(onClose).toHaveBeenCalled();
     tree.unmount();
   });
@@ -66,21 +66,21 @@ describe('OtpModal', () => {
         <OtpModal
           visible={true}
           onClose={onClose}
-          seedCode="654321"
+          seedCode="65432187"
           onVerify={onVerify}
         />,
       );
     });
     const otp2 = (tree as any).root.findByType('OtpInput');
     await act(async () => {
-      otp2.props.onComplete('654321');
+      otp2.props.onComplete('65432187');
     });
     await act(async () => {
       jest.runOnlyPendingTimers();
       jest.advanceTimersByTime(600);
       await Promise.resolve();
     });
-    expect(onVerify).toHaveBeenCalledWith('654321');
+    expect(onVerify).toHaveBeenCalledWith('65432187');
     expect(onClose).not.toHaveBeenCalled();
     tree.unmount();
   });

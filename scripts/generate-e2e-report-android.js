@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 function fmt(now = new Date()) {
   const p = n => String(n).padStart(2, '0');
-  return `${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}:${p(now.getHours())}.${p(now.getMinutes())}.${p(now.getSeconds())}`;
+  return `${now.getFullYear()}${p(now.getMonth() + 1)}${p(now.getDate())}:${p(
+    now.getHours(),
+  )}.${p(now.getMinutes())}.${p(now.getSeconds())}`;
 }
 const RUN_TS = process.env.RUN_TS || fmt();
 
@@ -74,6 +76,57 @@ function writeTechnicalMD(agg, dir) {
       } | ${formatDuration(c.duration)} | ${videoCell} |`,
     );
   });
+  // Stacktraces desde Allure results
+  lines.push('');
+  lines.push('## Errores (stacktrace)');
+  try {
+    const allureDir = path.join('reports', 'allure', `android-${RUN_TS}`);
+    const files = fs
+      .readdirSync(allureDir)
+      .filter(f => f.endsWith('-result.json'));
+    const failed = [];
+    files.forEach(f => {
+      const obj = JSON.parse(fs.readFileSync(path.join(allureDir, f), 'utf8'));
+      if (obj.status === 'failed') failed.push(obj);
+    });
+    if (failed.length === 0) {
+      lines.push('- Sin fallos');
+    } else {
+      failed.forEach(obj => {
+        const name = obj.name || obj.fullName || 'Caso';
+        const sd = obj.statusDetails || {};
+        lines.push(`### ${name}`);
+        if (sd.message) {
+          lines.push('**Mensaje:**');
+          lines.push('');
+          lines.push(sd.message);
+        }
+        if (sd.trace) {
+          lines.push('');
+          lines.push('**Stacktrace:**');
+          lines.push('');
+          lines.push('```');
+          lines.push(sd.trace);
+          lines.push('```');
+        }
+        lines.push('');
+      });
+    }
+  } catch {}
+  // Screenshots
+  lines.push('');
+  lines.push('## Screenshots de fallos');
+  const shotsDir = path.join('reports', 'screenshots', 'android', RUN_TS);
+  if (fs.existsSync(shotsDir)) {
+    const files = fs.readdirSync(shotsDir).filter(f => /failed\.png$/.test(f));
+    if (files.length === 0) lines.push('- No hay capturas de fallos');
+    else
+      files.forEach(f =>
+        lines.push(`- [${f}](../screenshots/android/${RUN_TS}/${f})`),
+      );
+  } else {
+    lines.push('- Directorio de capturas no disponible');
+  }
   const out = path.join('reports', `e2e_android_technical_${RUN_TS}.md`);
   fs.mkdirSync('reports', {recursive: true});
   fs.writeFileSync(out, lines.join('\n'));

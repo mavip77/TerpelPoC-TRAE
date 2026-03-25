@@ -1,5 +1,7 @@
 const {$, driver} = require('@wdio/globals');
 
+const VALID_OTP_LOGIN = '123456';
+
 async function openOtpModal() {
   const btn = await $('~open-otp');
   await btn.waitForExist({timeout: 15000});
@@ -30,7 +32,7 @@ describe('HU 29675 - Validación y avance automático (Android)', () => {
 
   it('29679: avanza automáticamente con OTP correcto', async () => {
     await openOtpModal();
-    await fillCode('123456');
+    await fillCode(VALID_OTP_LOGIN);
     const verifyBtn = await $('~verify-otp');
     await verifyBtn.waitForEnabled({timeout: 5000});
     await verifyBtn.click();

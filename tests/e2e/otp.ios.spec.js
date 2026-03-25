@@ -9,8 +9,8 @@ describe('OTP Modal iOS', () => {
     const close = await $('~close-otp');
     await close.click();
     try {
-      await driver.execute('mobile: swipe', {direction: 'down'});
-    } catch {}
+      await driver.execute('mobile: swipe', { direction: 'down' });
+    } catch { }
     const homeBtn = await $('~open-otp');
     await homeBtn.waitForExist({ timeout: 8000 });
     await verify.waitForExist({ reverse: true, timeout: 12000 });
@@ -19,7 +19,7 @@ describe('OTP Modal iOS', () => {
   it('ingresa código y verifica cierre', async () => {
     const btn = await $('~open-otp');
     await btn.click();
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       const field = await $(`~otp-${i}`);
       await field.waitForExist({ timeout: 5000 });
       await field.setValue(String(i + 1));

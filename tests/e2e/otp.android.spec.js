@@ -21,7 +21,7 @@ describe('OTP Modal Android', () => {
       btn = await $('android=new UiSelector().text("Abrir OTP")');
     }
     await btn.click();
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
       const field = await $(`~otp-${i}`);
       await field.waitForExist({ timeout: 5000 });
       await field.setValue(String(i + 1));

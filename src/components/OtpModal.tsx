@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import Modal from 'react-native-modal';
 import OtpInput from './OtpInput';
+import { OTP_LENGTH } from '../constants/OtpConstants';
 
 type Props = {
   visible: boolean;
@@ -36,10 +37,11 @@ export default function OtpModal({
     if (typeof V === 'function') {
       return new V(0);
     }
-    return {setValue: () => {}, __getValue: () => 0} as any;
+    return { setValue: () => { }, __getValue: () => 0 } as any;
   });
   const [timer, setTimer] = useState<number>(60);
-  const canVerify = code.length === 6 && /^[0-9]{6}$/.test(code) && !loading;
+  const otpRegex = new RegExp(`^[0-9]{${OTP_LENGTH}}$`);
+  const canVerify = code.length === OTP_LENGTH && otpRegex.test(code) && !loading;
   const autoSubmitRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function OtpModal({
     if (!visible) {
       return;
     }
-    if (seedCode && /^[0-9]{6}$/.test(seedCode)) {
+    if (seedCode && new RegExp(`^[0-9]{${OTP_LENGTH}}$`).test(seedCode)) {
       setCode(seedCode);
       if (autoSubmitRef.current) {
         clearTimeout(autoSubmitRef.current);
@@ -94,7 +96,7 @@ export default function OtpModal({
       clearTimeout(autoSubmitRef.current);
       autoSubmitRef.current = null;
     }
-    if (c && c.length === 6) {
+    if (c && c.length === OTP_LENGTH) {
       autoSubmitRef.current = setTimeout(() => {
         handleVerify();
       }, 300);
@@ -171,7 +173,7 @@ export default function OtpModal({
       useNativeDriver
       hideModalContentWhileAnimating>
       <View
-        style={[styles.sheet, {height}]}
+        style={[styles.sheet, { height }]}
         accessibilityLabel="otp-modal"
         testID="otp-modal">
         <View style={styles.header}>
@@ -187,14 +189,14 @@ export default function OtpModal({
         </View>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Animated.View style={{transform: [{translateX: errorShake}]}}>
+          <Animated.View style={{ transform: [{ translateX: errorShake }] }}>
             <Text style={styles.title}>Ingresa el código</Text>
             <Text style={styles.subtitle}>
-              Hemos enviado un código de 6 dígitos al número {phoneMask}
+              Hemos enviado un código de {OTP_LENGTH} dígitos al número {phoneMask}
             </Text>
             <View style={styles.otpArea}>
               <OtpInput
-                length={6}
+                length={OTP_LENGTH}
                 onComplete={onComplete}
                 seedCode={seedCode}
               />
@@ -216,10 +218,10 @@ export default function OtpModal({
             <Pressable
               onPress={handleVerify}
               disabled={!canVerify}
-              style={({pressed}) => [
+              style={({ pressed }) => [
                 styles.primaryBtn,
                 !canVerify ? styles.primaryBtnDisabled : null,
-                pressed && canVerify ? {opacity: 0.9} : null,
+                pressed && canVerify ? { opacity: 0.9 } : null,
               ]}
               accessibilityLabel="verify-otp"
               accessibilityRole="button"
@@ -231,7 +233,7 @@ export default function OtpModal({
                 <Text style={styles.primaryBtnText}>Verificar</Text>
               )}
             </Pressable>
-            <Pressable onPress={() => {}}>
+            <Pressable onPress={() => { }}>
               <Text style={styles.helpLink}>¿Necesitas ayuda?</Text>
             </Pressable>
           </Animated.View>
@@ -327,7 +329,7 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOpacity: 0.08,
     shadowRadius: 6,
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
   },
   primaryBtnDisabled: {
     backgroundColor: '#FCA5A5',
@@ -346,4 +348,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export {};
+export { };

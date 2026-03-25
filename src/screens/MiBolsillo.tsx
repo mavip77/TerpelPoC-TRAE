@@ -1,7 +1,6 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Alert,
-  FlatList,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -29,7 +28,7 @@ const COLORS = {
   mid: '#6B7280',
 };
 
-export default function MiBolsillo({navigation}: Props) {
+export default function MiBolsillo({ navigation }: Props) {
   const [tab, setTab] = useState<'recargar' | 'transferir' | 'movimientos'>(
     'transferir',
   );
@@ -111,7 +110,7 @@ export default function MiBolsillo({navigation}: Props) {
         ? `¿Deseas agregar a ${snapshot.name} (${snapshot.docType}-${snapshot.docNumber}) como favorito?`
         : `¿Deseas agregar el destinatario (${snapshot.docType}-${snapshot.docNumber}) como favorito?`,
       [
-        {text: 'No', style: 'cancel'},
+        { text: 'No', style: 'cancel' },
         {
           text: 'Agregar',
           onPress: async () => {
@@ -124,25 +123,25 @@ export default function MiBolsillo({navigation}: Props) {
               );
               const next = exists
                 ? list.map(f =>
-                    f.docType === snapshot.docType &&
+                  f.docType === snapshot.docType &&
                     f.docNumber === snapshot.docNumber
-                      ? {
-                          name: snapshot.name || f.name,
-                          docType: f.docType,
-                          docNumber: f.docNumber,
-                          photoUri: snapshot.photoUri ?? f.photoUri,
-                        }
-                      : f,
-                  )
+                    ? {
+                      name: snapshot.name || f.name,
+                      docType: f.docType,
+                      docNumber: f.docNumber,
+                      photoUri: snapshot.photoUri ?? f.photoUri,
+                    }
+                    : f,
+                )
                 : [
-                    ...list,
-                    {
-                      name: snapshot.name || 'Sin nombre',
-                      docType: snapshot.docType,
-                      docNumber: snapshot.docNumber,
-                      photoUri: snapshot.photoUri,
-                    },
-                  ];
+                  ...list,
+                  {
+                    name: snapshot.name || 'Sin nombre',
+                    docType: snapshot.docType,
+                    docNumber: snapshot.docNumber,
+                    photoUri: snapshot.photoUri,
+                  },
+                ];
               await saveFavoritos(next);
               setFavoritos(next);
               Alert.alert(
@@ -201,7 +200,7 @@ export default function MiBolsillo({navigation}: Props) {
 
   const loadFavoritos = async (): Promise<Favorito[]> => {
     try {
-      const creds = await Keychain.getGenericPassword({service: 'favorites'});
+      const creds = await Keychain.getGenericPassword({ service: 'favorites' });
       if (!creds) return [];
       const raw = creds.password;
       const parsed = JSON.parse(raw);
@@ -222,14 +221,14 @@ export default function MiBolsillo({navigation}: Props) {
   useEffect(() => {
     (async () => {
       try {
-        const creds = await Keychain.getGenericPassword({service: 'favorites'});
+        const creds = await Keychain.getGenericPassword({ service: 'favorites' });
         if (creds) {
           const parsed = JSON.parse(creds.password);
           if (Array.isArray(parsed)) {
             setFavoritos(parsed);
           }
         }
-      } catch {}
+      } catch { }
     })();
   }, []);
 
@@ -250,7 +249,7 @@ export default function MiBolsillo({navigation}: Props) {
       </View>
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={{paddingBottom: 24}}>
+        contentContainerStyle={{ paddingBottom: 24 }}>
         <View style={styles.summaryRow}>
           <View style={styles.summaryItem}>
             <MaterialCommunityIcons
@@ -264,7 +263,7 @@ export default function MiBolsillo({navigation}: Props) {
             </Text>
           </View>
           <View style={styles.summaryItem}>
-            <MaterialCommunityIcons name="coin" size={18} color="#F5B300" />
+            <MaterialCommunityIcons name="star-circle" size={18} color="#F5B300" />
             <Text style={styles.summaryLabel}>Cashback acumulado</Text>
             <Text style={styles.summaryValue}>$ 0</Text>
           </View>
@@ -561,58 +560,55 @@ export default function MiBolsillo({navigation}: Props) {
                 />
               </TouchableOpacity>
             </View>
-            <FlatList
-              data={txs}
-              keyExtractor={i => i.id}
-              renderItem={({item}) => (
-                <TouchableOpacity
-                  style={styles.txItem}
-                  onPress={() => {
-                    setSelectedTx(item);
-                    setDetailOpen(true);
-                  }}>
-                  <View style={styles.txIcon}>
-                    {item.type === 'credit' ? (
-                      <MaterialCommunityIcons
-                        name="arrow-up"
-                        size={16}
-                        color={COLORS.green}
-                      />
-                    ) : (
-                      <MaterialCommunityIcons
-                        name="arrow-down"
-                        size={16}
-                        color={COLORS.red}
-                      />
-                    )}
-                  </View>
-                  <View style={styles.txBody}>
-                    <Text style={styles.txTitle}>Transferencia</Text>
-                    <Text style={styles.txSub}>{item.partner}</Text>
-                  </View>
-                  <View style={styles.txMeta}>
-                    <Text style={styles.txDate}>
-                      {new Date(item.date).toLocaleDateString('es-CO', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.txAmount,
-                        item.amount > 0
-                          ? styles.txAmountPlus
-                          : styles.txAmountMinus,
-                      ]}>
-                      {item.amount > 0
-                        ? `+ ${item.amount.toLocaleString('es-CO')}`
-                        : `- ${Math.abs(item.amount).toLocaleString('es-CO')}`}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-            />
+            {txs.map(item => (
+              <TouchableOpacity
+                key={item.id}
+                style={styles.txItem}
+                onPress={() => {
+                  setSelectedTx(item);
+                  setDetailOpen(true);
+                }}>
+                <View style={styles.txIcon}>
+                  {item.type === 'credit' ? (
+                    <MaterialCommunityIcons
+                      name="arrow-up"
+                      size={16}
+                      color={COLORS.green}
+                    />
+                  ) : (
+                    <MaterialCommunityIcons
+                      name="arrow-down"
+                      size={16}
+                      color={COLORS.red}
+                    />
+                  )}
+                </View>
+                <View style={styles.txBody}>
+                  <Text style={styles.txTitle}>Transferencia</Text>
+                  <Text style={styles.txSub}>{item.partner}</Text>
+                </View>
+                <View style={styles.txMeta}>
+                  <Text style={styles.txDate}>
+                    {new Date(item.date).toLocaleDateString('es-CO', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </Text>
+                  <Text
+                    style={[
+                      styles.txAmount,
+                      item.amount > 0
+                        ? styles.txAmountPlus
+                        : styles.txAmountMinus,
+                    ]}>
+                    {item.amount > 0
+                      ? `+ ${item.amount.toLocaleString('es-CO')}`
+                      : `- ${Math.abs(item.amount).toLocaleString('es-CO')}`}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            ))}
           </View>
         ) : null}
 
@@ -638,7 +634,7 @@ export default function MiBolsillo({navigation}: Props) {
             </View>
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Estado</Text>
-              <Text style={[styles.detailValue, {color: COLORS.green}]}>
+              <Text style={[styles.detailValue, { color: COLORS.green }]}>
                 Aprobada
               </Text>
             </View>
@@ -699,7 +695,7 @@ export default function MiBolsillo({navigation}: Props) {
                 <TextInput
                   style={styles.input}
                   value={favEdit.name}
-                  onChangeText={t => setFavEdit({...favEdit, name: t})}
+                  onChangeText={t => setFavEdit({ ...favEdit, name: t })}
                   placeholder="Ingresa el alias"
                   accessibilityLabel="fav-edit-name-input"
                   testID="fav-edit-name-input"
@@ -708,7 +704,7 @@ export default function MiBolsillo({navigation}: Props) {
                 <TextInput
                   style={styles.input}
                   value={favEdit.photoUri || ''}
-                  onChangeText={t => setFavEdit({...favEdit, photoUri: t})}
+                  onChangeText={t => setFavEdit({ ...favEdit, photoUri: t })}
                   placeholder="https://..."
                 />
                 <TouchableOpacity
@@ -719,8 +715,8 @@ export default function MiBolsillo({navigation}: Props) {
                     if (!favEdit) return;
                     const next = favoritos.map(f =>
                       f.docType === favEdit.docType &&
-                      f.docNumber === favEdit.docNumber
-                        ? {...f, name: favEdit.name, photoUri: favEdit.photoUri}
+                        f.docNumber === favEdit.docNumber
+                        ? { ...f, name: favEdit.name, photoUri: favEdit.photoUri }
                         : f,
                     );
                     await saveFavoritos(next);
@@ -759,7 +755,7 @@ export default function MiBolsillo({navigation}: Props) {
               <Text style={styles.hint}>No tienes favoritos registrados.</Text>
             ) : (
               <>
-                <Text style={[styles.label, {marginTop: 0}]}>Buscar</Text>
+                <Text style={[styles.label, { marginTop: 0 }]}>Buscar</Text>
                 <TextInput
                   style={styles.input}
                   value={favSearch}
@@ -768,111 +764,106 @@ export default function MiBolsillo({navigation}: Props) {
                   accessibilityLabel="fav-search"
                   testID="fav-search"
                 />
-                <FlatList
-                  data={favoritos.filter(f => {
-                    const q = favSearch.trim().toLowerCase();
-                    if (!q) return true;
-                    return (
-                      f.name.toLowerCase().includes(q) ||
-                      `${f.docType}-${f.docNumber}`.toLowerCase().includes(q)
-                    );
-                  })}
-                  keyExtractor={(i, idx) =>
-                    `${i.docType}-${i.docNumber}-${idx}`
-                  }
-                  renderItem={({item}) => (
-                    <TouchableOpacity
-                      style={styles.favItem}
-                      onPress={() => {
-                        setSelectedFav(item);
-                        setFavAmount('');
-                        setFavListOpen(false);
-                        setFavConfirmOpen(true);
-                      }}
-                      accessibilityLabel={`fav-item-${item.docType}-${item.docNumber}`}
-                      testID={`fav-item-${item.docType}-${item.docNumber}`}>
-                      {item.photoUri ? (
-                        <View style={styles.favIcon}>
-                          {(() => {
-                            try {
-                              const FastImage =
-                                require('@d11/react-native-fast-image').default;
-                              return (
-                                <FastImage
-                                  style={{
-                                    width: 24,
-                                    height: 24,
-                                    borderRadius: 12,
-                                  }}
-                                  source={{uri: item.photoUri}}
-                                />
-                              );
-                            } catch {
-                              return (
-                                <MaterialCommunityIcons
-                                  name="account"
-                                  size={18}
-                                  color={COLORS.mid}
-                                />
-                              );
-                            }
-                          })()}
-                        </View>
-                      ) : (
-                        <View style={styles.favIcon}>
-                          <MaterialCommunityIcons
-                            name="account"
-                            size={18}
-                            color={COLORS.mid}
-                          />
-                        </View>
-                      )}
-                      <View style={{flex: 1, marginLeft: 10}}>
-                        <Text style={styles.txTitle}>{item.name}</Text>
-                        <Text style={styles.txSub}>
-                          {item.docType}-{item.docNumber}
-                        </Text>
-                      </View>
-                      <View style={{flexDirection: 'row', gap: 8}}>
-                        <TouchableOpacity
-                          accessibilityLabel={`fav-edit-${item.docType}-${item.docNumber}`}
-                          testID={`fav-edit-${item.docType}-${item.docNumber}`}
-                          onPress={() => {
-                            setFavEdit(item);
-                            setFavEditOpen(true);
-                          }}
-                          style={{padding: 4}}>
-                          <MaterialCommunityIcons
-                            name="pencil"
-                            size={18}
-                            color={COLORS.mid}
-                          />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          accessibilityLabel={`fav-delete-${item.docType}-${item.docNumber}`}
-                          testID={`fav-delete-${item.docType}-${item.docNumber}`}
-                          onPress={async () => {
-                            const next = favoritos.filter(
-                              f =>
-                                !(
-                                  f.docType === item.docType &&
-                                  f.docNumber === item.docNumber
-                                ),
+                {favoritos.filter(f => {
+                  const q = favSearch.trim().toLowerCase();
+                  if (!q) return true;
+                  return (
+                    f.name.toLowerCase().includes(q) ||
+                    `${f.docType}-${f.docNumber}`.toLowerCase().includes(q)
+                  );
+                }).map((item, idx) => (
+                  <TouchableOpacity
+                    key={`${item.docType}-${item.docNumber}-${idx}`}
+                    style={styles.favItem}
+                    onPress={() => {
+                      setSelectedFav(item);
+                      setFavAmount('');
+                      setFavListOpen(false);
+                      setFavConfirmOpen(true);
+                    }}
+                    accessibilityLabel={`fav-item-${item.docType}-${item.docNumber}`}
+                    testID={`fav-item-${item.docType}-${item.docNumber}`}>
+                    {item.photoUri ? (
+                      <View style={styles.favIcon}>
+                        {(() => {
+                          try {
+                            const FastImage =
+                              require('@d11/react-native-fast-image').default;
+                            return (
+                              <FastImage
+                                style={{
+                                  width: 24,
+                                  height: 24,
+                                  borderRadius: 12,
+                                }}
+                                source={{ uri: item.photoUri }}
+                              />
                             );
-                            await saveFavoritos(next);
-                            setFavoritos(next);
-                          }}
-                          style={{padding: 4}}>
-                          <MaterialCommunityIcons
-                            name="trash-can"
-                            size={18}
-                            color={COLORS.mid}
-                          />
-                        </TouchableOpacity>
+                          } catch {
+                            return (
+                              <MaterialCommunityIcons
+                                name="account"
+                                size={18}
+                                color={COLORS.mid}
+                              />
+                            );
+                          }
+                        })()}
                       </View>
-                    </TouchableOpacity>
-                  )}
-                />
+                    ) : (
+                      <View style={styles.favIcon}>
+                        <MaterialCommunityIcons
+                          name="account"
+                          size={18}
+                          color={COLORS.mid}
+                        />
+                      </View>
+                    )}
+                    <View style={{ flex: 1, marginLeft: 10 }}>
+                      <Text style={styles.txTitle}>{item.name}</Text>
+                      <Text style={styles.txSub}>
+                        {item.docType}-{item.docNumber}
+                      </Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                      <TouchableOpacity
+                        accessibilityLabel={`fav-edit-${item.docType}-${item.docNumber}`}
+                        testID={`fav-edit-${item.docType}-${item.docNumber}`}
+                        onPress={() => {
+                          setFavEdit(item);
+                          setFavEditOpen(true);
+                        }}
+                        style={{ padding: 4 }}>
+                        <MaterialCommunityIcons
+                          name="pencil"
+                          size={18}
+                          color={COLORS.mid}
+                        />
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        accessibilityLabel={`fav-delete-${item.docType}-${item.docNumber}`}
+                        testID={`fav-delete-${item.docType}-${item.docNumber}`}
+                        onPress={async () => {
+                          const next = favoritos.filter(
+                            f =>
+                              !(
+                                f.docType === item.docType &&
+                                f.docNumber === item.docNumber
+                              ),
+                          );
+                          await saveFavoritos(next);
+                          setFavoritos(next);
+                        }}
+                        style={{ padding: 4 }}>
+                        <MaterialCommunityIcons
+                          name="trash-can"
+                          size={18}
+                          color={COLORS.mid}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </TouchableOpacity>
+                ))}
               </>
             )}
           </View>
@@ -910,7 +901,7 @@ export default function MiBolsillo({navigation}: Props) {
                     {selectedFav.docType}-{selectedFav.docNumber}
                   </Text>
                 </View>
-                <Text style={[styles.label, {marginTop: 16}]}>
+                <Text style={[styles.label, { marginTop: 16 }]}>
                   Monto a transferir
                 </Text>
                 <TextInput
@@ -930,7 +921,7 @@ export default function MiBolsillo({navigation}: Props) {
                   style={[
                     styles.primaryBtn,
                     Number(favAmount || '0') <= 0 ||
-                    Number(favAmount || '0') >= saldo
+                      Number(favAmount || '0') >= saldo
                       ? styles.primaryBtnDisabled
                       : null,
                   ]}
@@ -943,8 +934,7 @@ export default function MiBolsillo({navigation}: Props) {
                     setFavConfirmOpen(false);
                     Alert.alert(
                       'Transferencia enviada',
-                      `Se transfirieron $ ${val.toLocaleString('es-CO')} a ${
-                        selectedFav.name
+                      `Se transfirieron $ ${val.toLocaleString('es-CO')} a ${selectedFav.name
                       }`,
                     );
                     setTab('transferir');
@@ -963,7 +953,7 @@ export default function MiBolsillo({navigation}: Props) {
 }
 
 const styles = StyleSheet.create({
-  safe: {flex: 1, backgroundColor: COLORS.grayBg},
+  safe: { flex: 1, backgroundColor: COLORS.grayBg },
   header: {
     backgroundColor: COLORS.red,
     paddingHorizontal: 16,
@@ -971,9 +961,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  backBtn: {marginRight: 8},
-  headerTitle: {color: COLORS.white, fontSize: 18, fontWeight: '700'},
-  scroll: {flex: 1},
+  backBtn: { marginRight: 8 },
+  headerTitle: { color: COLORS.white, fontSize: 18, fontWeight: '700' },
+  scroll: { flex: 1 },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -992,9 +982,9 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
-  summaryLabel: {color: COLORS.mid, fontSize: 12},
-  summaryValue: {color: COLORS.red, fontWeight: '700', fontSize: 16},
-  tabsRow: {flexDirection: 'row', marginHorizontal: 16, gap: 8},
+  summaryLabel: { color: COLORS.mid, fontSize: 12 },
+  summaryValue: { color: COLORS.red, fontWeight: '700', fontSize: 16 },
+  tabsRow: { flexDirection: 'row', marginHorizontal: 16, gap: 8 },
   tabBtn: {
     flex: 1,
     backgroundColor: COLORS.white,
@@ -1004,9 +994,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E5E7EB',
   },
-  tabActive: {borderColor: COLORS.red},
-  tabText: {color: COLORS.mid, fontWeight: '600'},
-  tabTextActive: {color: COLORS.red},
+  tabActive: { borderColor: COLORS.red },
+  tabText: { color: COLORS.mid, fontWeight: '600' },
+  tabTextActive: { color: COLORS.red },
   card: {
     backgroundColor: COLORS.white,
     margin: 16,
@@ -1017,10 +1007,10 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
-  cardTitle: {color: COLORS.dark, fontSize: 16, fontWeight: '700'},
-  balanceText: {color: COLORS.green, fontWeight: '700', marginTop: 6},
-  label: {color: COLORS.dark, marginTop: 14, fontWeight: '600'},
-  comboRow: {flexDirection: 'row', gap: 8, marginTop: 8},
+  cardTitle: { color: COLORS.dark, fontSize: 16, fontWeight: '700' },
+  balanceText: { color: COLORS.green, fontWeight: '700', marginTop: 6 },
+  label: { color: COLORS.dark, marginTop: 14, fontWeight: '600' },
+  comboRow: { flexDirection: 'row', gap: 8, marginTop: 8 },
   comboItem: {
     flex: 0,
     paddingHorizontal: 14,
@@ -1030,9 +1020,9 @@ const styles = StyleSheet.create({
     borderColor: '#E5E7EB',
     backgroundColor: '#F9FAFB',
   },
-  comboActive: {borderColor: COLORS.red, backgroundColor: COLORS.white},
-  comboText: {color: COLORS.mid, fontWeight: '600'},
-  comboTextActive: {color: COLORS.red},
+  comboActive: { borderColor: COLORS.red, backgroundColor: COLORS.white },
+  comboText: { color: COLORS.mid, fontWeight: '600' },
+  comboTextActive: { color: COLORS.red },
   input: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -1041,9 +1031,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginTop: 8,
   },
-  hint: {fontSize: 12, color: COLORS.mid, marginTop: 6},
-  hintOk: {color: COLORS.green},
-  hintError: {color: COLORS.red},
+  hint: { fontSize: 12, color: COLORS.mid, marginTop: 6 },
+  hintOk: { color: COLORS.green },
+  hintError: { color: COLORS.red },
   primaryBtn: {
     marginTop: 20,
     height: 48,
@@ -1052,8 +1042,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  primaryBtnDisabled: {backgroundColor: '#FCA5A5'},
-  primaryBtnText: {color: COLORS.white, fontWeight: '700'},
+  primaryBtnDisabled: { backgroundColor: '#FCA5A5' },
+  primaryBtnText: { color: COLORS.white, fontWeight: '700' },
   secondaryBtn: {
     marginTop: 12,
     height: 44,
@@ -1066,10 +1056,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 8,
   },
-  secondaryBtnDisabled: {borderColor: '#E5E7EB', backgroundColor: '#F9FAFB'},
-  secondaryBtnText: {color: COLORS.red, fontWeight: '700'},
-  secondaryBtnTextDisabled: {color: '#9CA3AF'},
-  presetsRow: {flexDirection: 'row', gap: 8, marginTop: 12},
+  secondaryBtnDisabled: { borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' },
+  secondaryBtnText: { color: COLORS.red, fontWeight: '700' },
+  secondaryBtnTextDisabled: { color: '#9CA3AF' },
+  presetsRow: { flexDirection: 'row', gap: 8, marginTop: 12 },
   presetBtn: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -1078,9 +1068,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#F9FAFB',
   },
-  presetActive: {borderColor: COLORS.red, backgroundColor: COLORS.white},
-  presetText: {color: COLORS.mid, fontWeight: '600'},
-  presetTextActive: {color: COLORS.red},
+  presetActive: { borderColor: COLORS.red, backgroundColor: COLORS.white },
+  presetText: { color: COLORS.mid, fontWeight: '600' },
+  presetTextActive: { color: COLORS.red },
   amountBadge: {
     height: 40,
     borderRadius: 8,
@@ -1089,7 +1079,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 12,
   },
-  amountBadgeText: {color: COLORS.red, fontWeight: '700'},
+  amountBadgeText: { color: COLORS.red, fontWeight: '700' },
   collapseHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1103,15 +1093,15 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 8,
   },
-  tableHeader: {flexDirection: 'row', justifyContent: 'space-between'},
+  tableHeader: { flexDirection: 'row', justifyContent: 'space-between' },
   tableRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 6,
   },
-  tableCellHead: {color: COLORS.mid, fontWeight: '700'},
-  tableCell: {color: COLORS.dark},
-  actionsRow: {flexDirection: 'row', alignItems: 'center', gap: 8},
+  tableCellHead: { color: COLORS.mid, fontWeight: '700' },
+  tableCell: { color: COLORS.dark },
+  actionsRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   actionBtn: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -1120,7 +1110,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: COLORS.white,
   },
-  actionText: {color: COLORS.mid, fontWeight: '600'},
+  actionText: { color: COLORS.mid, fontWeight: '600' },
   actionIcon: {
     borderWidth: 1,
     borderColor: '#E5E7EB',
@@ -1144,15 +1134,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  txBody: {flex: 1, marginLeft: 10},
-  txTitle: {color: COLORS.dark, fontWeight: '700'},
-  txSub: {color: COLORS.mid},
-  txMeta: {alignItems: 'flex-end'},
-  txDate: {color: COLORS.mid, fontSize: 12},
-  txAmount: {marginTop: 4, fontWeight: '700'},
-  txAmountPlus: {color: COLORS.green},
-  txAmountMinus: {color: COLORS.red},
-  modal: {justifyContent: 'flex-end', margin: 0},
+  txBody: { flex: 1, marginLeft: 10 },
+  txTitle: { color: COLORS.dark, fontWeight: '700' },
+  txSub: { color: COLORS.mid },
+  txMeta: { alignItems: 'flex-end' },
+  txDate: { color: COLORS.mid, fontSize: 12 },
+  txAmount: { marginTop: 4, fontWeight: '700' },
+  txAmountPlus: { color: COLORS.green },
+  txAmountMinus: { color: COLORS.red },
+  modal: { justifyContent: 'flex-end', margin: 0 },
   sheet: {
     backgroundColor: COLORS.white,
     borderTopLeftRadius: 24,
@@ -1170,8 +1160,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 12,
   },
-  detailLabel: {color: COLORS.dark},
-  detailValue: {color: COLORS.dark, fontWeight: '600'},
+  detailLabel: { color: COLORS.dark },
+  detailValue: { color: COLORS.dark, fontWeight: '600' },
   supportBtn: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1182,7 +1172,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 16,
   },
-  supportText: {color: COLORS.red, fontWeight: '700'},
+  supportText: { color: COLORS.red, fontWeight: '700' },
   favItem: {
     flexDirection: 'row',
     alignItems: 'center',

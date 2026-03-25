@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Platform,
   SafeAreaView,
@@ -15,18 +15,21 @@ import {
   View,
 } from 'react-native';
 import OtpModal from './src/components/OtpModal';
+import PicoYPlacaModal, { PicoPlacaSaveData } from './src/components/PicoYPlacaModal';
 import CashbackScreen from './src/screens/CashbackScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import MiBolsillo from './src/screens/MiBolsillo';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {SafeAreaProvider} from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
   const [seedCode, setSeedCode] = useState<string | undefined>(undefined);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [picoPlacaVisible, setPicoPlacaVisible] = useState<boolean>(true);
+  const [picoPlacaData, setPicoPlacaData] = useState<PicoPlacaSaveData | null>(null);
   const [signature, setSignature] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -45,9 +48,9 @@ function App(): React.JSX.Element {
           if (hashes && hashes.length > 0) {
             setSignature(hashes[0]);
           }
-        } catch {}
+        } catch { }
         remove = await mod.startOtpListener((message: string) => {
-          const match = message.match(/(?:^|\D)(\d{6})(?:\D|$)/);
+          const match = message.match(/(?:^|\D)(\d{8})(?:\D|$)/);
           if (match && match[1]) {
             setSeedCode(match[1]);
           }
@@ -68,13 +71,15 @@ function App(): React.JSX.Element {
       <View style={styles.container}>
         <SafeAreaProvider>
           <NavigationContainer>
-            <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
               <Stack.Screen name="Home">
                 {props => (
                   <HomeScreen
                     onOpenOtp={() => setModalVisible(true)}
                     navigation={props.navigation}
                     isOtpVisible={modalVisible}
+                    picoPlacaData={picoPlacaData}
+                    onOpenPicoPlaca={() => setPicoPlacaVisible(true)}
                   />
                 )}
               </Stack.Screen>
@@ -94,6 +99,11 @@ function App(): React.JSX.Element {
           seedCode={seedCode}
           onVerify={mockValidateOtp}
         />
+        <PicoYPlacaModal
+          visible={picoPlacaVisible}
+          onClose={() => setPicoPlacaVisible(false)}
+          onSave={setPicoPlacaData}
+        />
       </View>
     </SafeAreaView>
   );
@@ -112,8 +122,8 @@ const MIN_LEN = 4;
 const MAX_LEN = 8;
 
 const styles = StyleSheet.create({
-  safe: {flex: 1, backgroundColor: '#f6f8fa'},
-  container: {flex: 1},
+  safe: { flex: 1, backgroundColor: '#f6f8fa' },
+  container: { flex: 1 },
   signature: {
     position: 'absolute',
     top: 8,

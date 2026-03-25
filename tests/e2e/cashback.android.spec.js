@@ -15,7 +15,11 @@ describe('Cashback Android - navegación y redención', () => {
     );
   });
   beforeEach(async () => {
-    await driver.activateApp('org.reactjs.native.example.TerpelPoC');
+    const pkgId = 'com.terpelpoc';
+    try {
+      await driver.terminateApp(pkgId);
+    } catch {}
+    await driver.activateApp(pkgId);
   });
 
   it('navega a Cashback y regresa con back', async () => {

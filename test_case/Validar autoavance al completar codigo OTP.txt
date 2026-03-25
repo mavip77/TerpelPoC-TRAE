@@ -1,0 +1,5 @@
+Scenario: Autoavance al ingresar un codigo OTP valido manualmente
+Given que el usuario abre el modal de ingreso de codigo OTP
+When ingresa manualmente un codigo OTP valido de 6 digitos
+Then la aplicacion debe validar el codigo y cerrar el modal, mostrando la pantalla anterior
+

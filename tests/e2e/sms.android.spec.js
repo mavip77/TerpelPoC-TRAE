@@ -129,6 +129,19 @@ describe('SMS Retriever OTP', () => {
     }
   });
 
+  it('avanza automáticamente al completar 6 dígitos válidos sin pulsar Verificar', async () => {
+    await openOtpModal();
+    const code = '123456';
+    for (let i = 0; i < code.length; i++) {
+      const el = await $(`~otp-${i}`);
+      await el.waitForExist({timeout: 8000});
+      await el.setValue(code[i]);
+    }
+    await waitModalClosed();
+    const home = await $('~open-otp');
+    await home.waitForExist({timeout: 8000});
+  });
+
   it('maneja límites de longitud: ignora 3 y 9 dígitos', async () => {
     const hash = await getAppHash();
     if (hash) {

@@ -1,9 +1,8 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, { useCallback, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Animated,
   Dimensions,
-  FlatList,
   SafeAreaView,
   ScrollView,
   StatusBar,
@@ -14,14 +13,18 @@ import {
 import FastImage from '@d11/react-native-fast-image';
 // @ts-ignore
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {COLORS, promos, points} from '../constants/HomeConstants';
-import {homeStyles as styles} from '../styles/HomeStyles';
+import { COLORS, promos, points } from '../constants/HomeConstants';
+import { homeStyles as styles } from '../styles/HomeStyles';
+import { authenticateWithBiometrics } from '../utils/biometricAuth';
+import type { PicoPlacaSaveData } from '../components/PicoYPlacaModal';
 
 type HomeProps = {
   onOpenOtp: () => void;
   navigation?: any;
   onNavigateMiBolsillo?: () => void;
   isOtpVisible?: boolean;
+  picoPlacaData?: PicoPlacaSaveData | null;
+  onOpenPicoPlaca?: () => void;
 };
 
 export default function HomeScreen({
@@ -29,17 +32,34 @@ export default function HomeScreen({
   onNavigateMiBolsillo,
   navigation,
   isOtpVisible,
+  picoPlacaData,
+  onOpenPicoPlaca,
 }: HomeProps) {
   const width = Dimensions.get('window').width;
   const bannerW = Math.min(width, 360);
   const [promoIndex, setPromoIndex] = useState(0);
-  const promoRef = useRef<FlatList>(null);
+  const promoRef = useRef<ScrollView>(null);
   const [openingOtp, setOpeningOtp] = useState(false);
   const scale = useRef(new Animated.Value(1)).current;
+  const [balancesRevealed, setBalancesRevealed] = useState(false);
 
   const promoIndicator = useMemo(
     () => promos.map((_, i) => i === promoIndex),
     [promoIndex],
+  );
+
+  const navigateWithBiometrics = useCallback(
+    async (screen: string, fallback?: () => void) => {
+      const ok = await authenticateWithBiometrics();
+      if (!ok) return;
+      setBalancesRevealed(true);
+      if (fallback) {
+        fallback();
+      } else {
+        navigation?.navigate?.(screen);
+      }
+    },
+    [navigation],
   );
 
   return (
@@ -105,7 +125,7 @@ export default function HomeScreen({
             }}
             style={styles.openOtpBtn}
             disabled={openingOtp || !!isOtpVisible}>
-            <Animated.View style={{transform: [{scale}]}}>
+            <Animated.View style={{ transform: [{ scale }] }}>
               {openingOtp ? (
                 <View style={styles.spinnerRow}>
                   <ActivityIndicator size="small" color={COLORS.white} />
@@ -116,15 +136,73 @@ export default function HomeScreen({
               )}
             </Animated.View>
           </TouchableOpacity>
+
+          {/* Pico y Placa Banner */}
+          {picoPlacaData && (
+            <TouchableOpacity
+              testID="pyp-banner"
+              activeOpacity={0.85}
+              onPress={onOpenPicoPlaca}
+              style={[
+                styles.pypBanner,
+                picoPlacaData.result.restricted
+                  ? styles.pypBannerRestricted
+                  : styles.pypBannerFree,
+              ]}>
+              <MaterialCommunityIcons
+                name={
+                  picoPlacaData.result.restricted
+                    ? 'car-off'
+                    : 'car-connected'
+                }
+                size={26}
+                color={
+                  picoPlacaData.result.restricted ? '#DC2626' : '#16A34A'
+                }
+              />
+              <View style={styles.pypBannerText}>
+                <Text
+                  style={[
+                    styles.pypBannerTitle,
+                    picoPlacaData.result.restricted
+                      ? styles.pypBannerTitleRestricted
+                      : styles.pypBannerTitleFree,
+                  ]}>
+                  {picoPlacaData.result.restricted
+                    ? 'Hoy tienes pico y placa'
+                    : 'Hoy NO tienes pico y placa'}
+                </Text>
+                <Text
+                  style={[
+                    styles.pypBannerSub,
+                    picoPlacaData.result.restricted && styles.pypBannerSubRestricted,
+                  ]}>
+                  {picoPlacaData.city === 'bogota' ? 'Bogotá' : 'Medellín'}
+                  {' · '}
+                  {picoPlacaData.vehicle === 'carro' ? 'Carro' : 'Moto'}
+                  {' · '}
+                  {picoPlacaData.plate}
+                </Text>
+              </View>
+              <MaterialCommunityIcons
+                name="pencil"
+                size={18}
+                color={
+                  picoPlacaData.result.restricted ? COLORS.mid : COLORS.white
+                }
+                style={{ opacity: 0.7 }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
 
         <View style={styles.cardsRow}>
           <View style={styles.card}>
             <View style={styles.cardHeader}>
-              <MaterialCommunityIcons name="coin" size={20} color="#F5B300" />
+              <MaterialCommunityIcons name="star-circle" size={20} color="#F5B300" />
               <Text style={styles.cardTitle}>Hoy sumas</Text>
             </View>
-            <Text style={[styles.cardValue, {color: COLORS.fuchsia}]}>0</Text>
+            <Text style={[styles.cardValue, { color: COLORS.fuchsia }]}>0</Text>
             <View style={styles.cardFooter}>
               <Text style={styles.cardLink}>Ver más</Text>
               <MaterialCommunityIcons
@@ -139,9 +217,11 @@ export default function HomeScreen({
             activeOpacity={0.9}
             accessibilityLabel="open-mi-bolsillo"
             testID="open-mi-bolsillo"
-            onPress={
-              onNavigateMiBolsillo ??
-              (() => navigation?.navigate?.('MiBolsillo'))
+            onPress={() =>
+              navigateWithBiometrics(
+                'MiBolsillo',
+                onNavigateMiBolsillo ?? undefined,
+              )
             }>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons
@@ -151,7 +231,9 @@ export default function HomeScreen({
               />
               <Text style={styles.cardTitle}>Mi Bolsillo</Text>
             </View>
-            <Text style={[styles.cardValue, {color: COLORS.red}]}>$ 8.100</Text>
+            <Text style={[styles.cardValue, { color: COLORS.red }]}>
+              {balancesRevealed ? '$ 8.100' : '$ ****'}
+            </Text>
             <View style={styles.cardFooter}>
               <Text style={styles.cardLink}>Ver más</Text>
               <MaterialCommunityIcons
@@ -166,7 +248,7 @@ export default function HomeScreen({
             activeOpacity={0.9}
             accessibilityLabel="open-cashback"
             testID="open-cashback"
-            onPress={() => navigation?.navigate?.('Cashback')}>
+            onPress={() => navigateWithBiometrics('Cashback')}>
             <View style={styles.cardHeader}>
               <MaterialCommunityIcons
                 name="ticket-percent"
@@ -175,8 +257,8 @@ export default function HomeScreen({
               />
               <Text style={styles.cardTitle}>Cashback</Text>
             </View>
-            <Text style={[styles.cardValue, {color: COLORS.green}]}>
-              $ 18.500
+            <Text style={[styles.cardValue, { color: COLORS.green }]}>
+              {balancesRevealed ? '$ 18.500' : '$ ****'}
             </Text>
             <View style={styles.cardFooter}>
               <Text style={styles.cardLink}>Ver más</Text>
@@ -209,8 +291,21 @@ export default function HomeScreen({
         </View>
 
         <Text style={styles.sectionTitle}>Secciones</Text>
-        <View style={styles.gridRow}>
-          <View style={styles.gridItem}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.gridRow}>
+          <TouchableOpacity
+            style={styles.gridItem}
+            activeOpacity={0.7}
+            accessibilityLabel="section-mi-bolsillo"
+            testID="section-mi-bolsillo"
+            onPress={() =>
+              navigateWithBiometrics(
+                'MiBolsillo',
+                onNavigateMiBolsillo ?? undefined,
+              )
+            }>
             <View style={[styles.gridIcon, styles.gridIconGreen]}>
               <MaterialCommunityIcons
                 name="wallet"
@@ -219,7 +314,7 @@ export default function HomeScreen({
               />
             </View>
             <Text style={styles.gridLabel}>Mi bolsillo</Text>
-          </View>
+          </TouchableOpacity>
           <View style={styles.gridItem}>
             <View style={[styles.gridIcon, styles.gridIconBlue]}>
               <MaterialCommunityIcons
@@ -250,13 +345,26 @@ export default function HomeScreen({
             </View>
             <Text style={styles.gridLabel}>Mis bonos</Text>
           </View>
-        </View>
+          <TouchableOpacity
+            style={styles.gridItem}
+            activeOpacity={0.7}
+            accessibilityLabel="section-cashback"
+            testID="section-cashback"
+            onPress={() => navigateWithBiometrics('Cashback')}>
+            <View style={[styles.gridIcon, styles.gridIconFuchsia]}>
+              <MaterialCommunityIcons
+                name="cash-refund"
+                size={24}
+                color={COLORS.fuchsia}
+              />
+            </View>
+            <Text style={styles.gridLabel}>Cashback</Text>
+          </TouchableOpacity>
+        </ScrollView>
 
         <View style={styles.carouselBlock}>
-          <FlatList
+          <ScrollView
             ref={promoRef}
-            data={promos}
-            keyExtractor={i => i.id}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
@@ -265,26 +373,26 @@ export default function HomeScreen({
             onMomentumScrollEnd={ev => {
               const idx = Math.round(
                 ev.nativeEvent.contentOffset.x /
-                  ev.nativeEvent.layoutMeasurement.width,
+                ev.nativeEvent.layoutMeasurement.width,
               );
               setPromoIndex(idx);
-            }}
-            renderItem={({item}) => (
-              <View style={[styles.banner, {width: bannerW}]}>
+            }}>
+            {promos.map(item => (
+              <View key={item.id} style={[styles.banner, { width: bannerW }]}>
                 <View style={styles.bannerHeader}>
                   <Text style={styles.bannerTitle}>{item.title}</Text>
                 </View>
                 <FastImage
                   style={styles.bannerImage}
-                  source={{uri: item.image}}
+                  source={{ uri: item.image }}
                   resizeMode={FastImage.resizeMode.cover}
                 />
                 <TouchableOpacity style={styles.bannerCta}>
                   <Text style={styles.bannerCtaText}>Participa aquí</Text>
                 </TouchableOpacity>
               </View>
-            )}
-          />
+            ))}
+          </ScrollView>
           <View style={styles.dotsRow}>
             {promoIndicator.map((active, i) => (
               <View
@@ -301,29 +409,27 @@ export default function HomeScreen({
             <Text style={styles.viewAll}>Ver todos</Text>
           </TouchableOpacity>
         </View>
-        <FlatList
-          data={points}
-          keyExtractor={i => i.id}
+        <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          pagingEnabled
-          renderItem={({item}) => (
-            <View style={styles.pointsCard}>
+          pagingEnabled>
+          {points.map(item => (
+            <View key={item.id} style={styles.pointsCard}>
               <FastImage
                 style={styles.pointsImg}
-                source={{uri: item.image}}
+                source={{ uri: item.image }}
                 resizeMode={FastImage.resizeMode.cover}
               />
               <Text style={styles.pointsText}>{item.title}</Text>
               <View style={styles.pointsCoin}>
-                <MaterialCommunityIcons name="coin" size={18} color="#F5B300" />
+                <MaterialCommunityIcons name="star-circle" size={18} color="#F5B300" />
               </View>
               <TouchableOpacity style={styles.quickBtn}>
                 <Text style={styles.quickBtnText}>S</Text>
               </TouchableOpacity>
             </View>
-          )}
-        />
+          ))}
+        </ScrollView>
 
         <View style={styles.bottomTabs}>
           <View style={styles.tabItemActive}>
@@ -363,4 +469,4 @@ export default function HomeScreen({
   );
 }
 
-export {};
+export { };
