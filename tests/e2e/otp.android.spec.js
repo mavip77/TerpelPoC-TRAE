@@ -1,7 +1,19 @@
 const { $, driver } = require('@wdio/globals');
 
+async function dismissPicoPlacaModal() {
+  try {
+    const closeBtn = await $('~Cerrar pico y placa');
+    await closeBtn.waitForExist({ timeout: 10000 });
+    await closeBtn.click();
+    await closeBtn.waitForExist({ reverse: true, timeout: 5000 });
+  } catch {
+    // modal may not be visible, continue
+  }
+}
+
 describe('OTP Modal Android', () => {
   it('abre y cierra el modal OTP', async () => {
+    await dismissPicoPlacaModal();
     let btn = await $('~open-otp');
     await btn.waitForExist({ timeout: 15000 });
     if (!(await btn.isExisting())) {
@@ -15,6 +27,7 @@ describe('OTP Modal Android', () => {
   });
 
   it('ingresa código y verifica cierre', async () => {
+    await dismissPicoPlacaModal();
     let btn = await $('~open-otp');
     await btn.waitForExist({ timeout: 15000 });
     if (!(await btn.isExisting())) {
